@@ -1,11 +1,11 @@
 import Header from "@/components/Header";
-import Link from "next/link";
+import College from "./College";
 
-export default function UsersPage() {
+export default function StudentsPage() {
   return (
     <main>
-      <Header title="Users" />
-      <Link href="users/students">Manange Students</Link>
+      <Header title="Manage Users" />
+      <College />
     </main>
   );
 }

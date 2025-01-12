@@ -7,7 +7,7 @@ export default async function AdminLayout({
 }>) {
   const session = await auth();
 
-  if (!session || session.user.role !== "ADMIN") return <>Not Allowed</>;
+  if (!session || session.user.role !== "Admin") return <>Not Allowed</>;
 
   return <>{children}</>;
 }

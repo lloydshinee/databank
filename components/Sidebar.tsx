@@ -67,7 +67,7 @@ export async function SideNav() {
         </SheetHeader>
         <ScrollArea className="flex flex-col w-full max-h-screen">
           <div className="flex flex-col">
-            <SideLinks role={session?.user.role!} />
+            <SideLinks role={session?.user.role || ""} />
           </div>
           <div className="mt-auto w-full p-5 rounded-lg shadow-lg">
             <div className="flex items-center gap-4">

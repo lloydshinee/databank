@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/select";
 import { colleges } from "@/lib/globals";
 import { useState } from "react";
+import { User } from "@prisma/client";
 
 const userFormSchema = z.object({
   id: z.string().optional(), // ID is auto-generated
@@ -41,31 +42,33 @@ export type UserFormData = z.infer<typeof userFormSchema>;
 
 interface UserFormProps {
   role: string;
+  data?: User;
 }
 
-export default function UserForm({ role }: UserFormProps) {
+export default function UserForm({ role, data }: UserFormProps) {
   const form = useForm<UserFormData>({
     resolver: zodResolver(userFormSchema),
     defaultValues: {
-      id: "",
-      email: "",
-      contactNumber: "",
-      password: "",
+      id: data?.id || "",
+      email: data?.email || "",
+      contactNumber: data?.contactNumber || "",
+      password: data?.password || "",
       role,
-      firstName: "",
-      lastName: "",
-      college: "",
-      program: "",
-      yearLevel: undefined,
-      schoolId: "",
+      firstName: data?.firstName || "",
+      lastName: data?.lastName || "",
+      college: data?.college || "",
+      program: data?.program || "",
+      yearLevel: data?.yearLevel || undefined,
+      schoolId: data?.schoolId || "",
     },
   });
 
-  const [selectedCollege, setSelectedCollege] = useState<string | null>(null);
+  const [selectedCollege, setSelectedCollege] = useState<string | null>(
+    data?.college || null
+  );
   const programsForSelectedCollege =
     colleges.find((college) => college.name === selectedCollege)?.programs ||
     [];
-
   function isFieldVisible(field: string): boolean {
     if (
       role === "Admin" &&

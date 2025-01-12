@@ -103,3 +103,25 @@ export interface College {
   image: string;
   programs: Program[];
 }
+
+export interface Student {
+  id: string;
+  firstName: string;
+  email: string;
+  contactNumber: string | null;
+  lastName: string;
+  yearLevel: number;
+  college: string;
+  program: string;
+  schoolId: string | null;
+}
+
+export interface Faculty {
+  id: string;
+  firstName: string;
+  email: string;
+  contactNumber: string | null;
+  lastName: string;
+  college: string;
+  schoolId: string | null;
+}

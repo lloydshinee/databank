@@ -47,8 +47,9 @@ export function AdminForm() {
     try {
       await createAdmin(values);
       message = "Admin Created Succesfully";
-    } catch (error) {
+    } catch (err) {
       message = "Failed to create Admin";
+      console.log(err);
     } finally {
       toast({
         title: "Create Admin",

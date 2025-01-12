@@ -1,19 +1,8 @@
 "use server";
 
-import { StudentFormData } from "@/components/forms/StudentForm";
 import prisma from "@/lib/prisma";
 
-export async function createStudent(data: StudentFormData) {
-  try {
-    await prisma.user.create({
-      data: { role: "Student", ...data, yearLevel: parseInt(data.yearLevel) },
-    });
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-export async function getStudents({
+export async function getFacultys({
   college,
   search,
   page = 1,
@@ -27,10 +16,10 @@ export async function getStudents({
   try {
     const skip = (page - 1) * limit;
 
-    // First, get the total count of matching students
+    // First, get the total count of matching faculty
     const totalCount = await prisma.user.count({
       where: {
-        role: "Student",
+        role: "Faculty",
         ...(college && { college }),
         ...(search && {
           OR: [
@@ -43,9 +32,9 @@ export async function getStudents({
     });
 
     // Get the paginated student data
-    const students = await prisma.user.findMany({
+    const faculty = await prisma.user.findMany({
       where: {
-        role: "Student",
+        role: "Faculty",
         ...(college && { college }),
         ...(search && {
           OR: [
@@ -59,9 +48,9 @@ export async function getStudents({
       take: limit,
     });
 
-    return { students, totalCount }; // Return both students and totalCount
+    return { faculty, totalCount }; // Return both faculty and totalCount
   } catch (error) {
-    console.error("Error fetching students:", error);
-    return { students: [], totalCount: 0 };
+    console.error("Error fetching faculty:", error);
+    return { faculty: [], totalCount: 0 };
   }
 }

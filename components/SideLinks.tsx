@@ -9,10 +9,10 @@ export function SideLinks({ role }: { role: string }) {
   let links;
 
   switch (role) {
-    case "ADMIN":
+    case "Admin":
       links = AdminLinks;
       break;
-    case "STUDENT":
+    case "Student":
       links = StudentLinks;
       break;
     default:

@@ -52,6 +52,7 @@ export function ChangePasswordForm() {
     setIsLoading(true);
     try {
       // Call your password change API or action
+      console.log(data);
       toast({
         title: "Success",
         description: "Your password has been updated.",

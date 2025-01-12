@@ -47,6 +47,7 @@ export function LoginForm() {
       });
       window.location.reload();
     } catch (error) {
+      console.log(error);
       toast({
         title: "Sign In Failed",
         description: "Incorrect Email or Password",

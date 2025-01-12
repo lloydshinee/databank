@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { colleges } from "@/lib/globals";
+import { colleges, Student } from "@/lib/globals";
 import { createStudent } from "@/actions/student.action";
 
 const schema = z.object({
@@ -41,11 +41,17 @@ const schema = z.object({
 
 export type StudentFormData = z.infer<typeof schema>;
 
-export function StudentForm({ college }: { college?: string }) {
+export function StudentForm({
+  college,
+  data,
+}: {
+  college?: string;
+  data?: Student;
+}) {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const [selectedCollege, setSelectedCollege] = useState<string | null>(
-    college || null
+    data?.college || college || null
   );
 
   const programsForSelectedCollege =
@@ -55,13 +61,13 @@ export function StudentForm({ college }: { college?: string }) {
   const form = useForm<StudentFormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      email: "",
-      password: "",
-      firstName: "",
-      lastName: "",
-      yearLevel: "",
-      college: college || "",
-      program: "",
+      email: data?.email || "",
+      password: "", // Password field is left empty for security reasons
+      firstName: data?.firstName || "",
+      lastName: data?.lastName || "",
+      yearLevel: data?.yearLevel?.toString() || "",
+      college: data?.college || college || "",
+      program: data?.program || "",
     },
   });
 
@@ -72,6 +78,7 @@ export function StudentForm({ college }: { college?: string }) {
       message = "Student Created Successfully";
       await createStudent(values);
     } catch (error) {
+      console.log(error);
       message = "Failed to create Student";
     } finally {
       toast({
@@ -221,7 +228,7 @@ export function StudentForm({ college }: { college?: string }) {
         />
         {/* Submit Button */}
         <Button type="submit" disabled={loading}>
-          Create Student
+          {data ? "Update" : "Create"} Student
         </Button>
       </form>
     </Form>

@@ -1,29 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as XLSX from "xlsx"; // Import the xlsx package
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { Button } from "../ui/button";
 import { createUsers } from "@/actions/user.action";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { colleges } from "@/lib/globals";
 
 const userFormSchema = z.object({
   id: z.string().optional(), // ID is auto-generated
@@ -50,28 +35,16 @@ interface UsersFormProps {
 }
 
 export default function UsersForm({ role }: UsersFormProps) {
+  const [userCount, setUserCount] = useState(0);
+
   const form = useForm<UsersFormData>({
     resolver: zodResolver(usersFormSchema),
     defaultValues: {
-      users: [
-        // {
-        //   idnum: "",
-        //   first_name: "",
-        //   last_name: "",
-        //   year_level: undefined,
-        //   college_id: "",
-        //   program_id: "",
-        //   email: "",
-        //   password: "",
-        //   password_confirmation: "",
-        //   phone_number: "",
-        //   role: role || "",
-        // },
-      ],
+      users: [],
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { append } = useFieldArray({
     control: form.control,
     name: "users",
   });
@@ -92,54 +65,29 @@ export default function UsersForm({ role }: UsersFormProps) {
         // Map the Excel data to the expected format
         const mappedUsers = jsonData.map((item: any) => ({
           email: item["Email"] || "",
-          contactNumber: item["Contact Number"] || "",
+          contactNumber: item["Contact Number"]
+            ? String(item["Contact Number"])
+            : "",
           password: item["Password"] || "",
           role: role || "",
           firstName: item["First Name"] || "",
           lastName: item["Last Name"] || "",
           college: item["College"] || "",
           program: item["Program"] || "",
-          yearLevel: item["Year Level"] || undefined,
-          studentId: item["Student ID"] || "",
+          yearLevel: item["Year Level"]
+            ? Number(item["Year Level"])
+            : undefined,
+          schoolId: item["School ID"] ? String(item["School ID"]) : "",
         }));
 
         // Append the parsed users to the form
         append(mappedUsers);
+
+        // Update the user count
+        setUserCount(mappedUsers.length);
       };
       reader.readAsArrayBuffer(file);
     }
-  };
-
-  function isFieldVisible(field: string): boolean {
-    if (
-      role === "admin" &&
-      ["year_level", "college_id", "program_id"].includes(field)
-    ) {
-      return false;
-    }
-    if ((role === "faculty" || role === "dean") && field === "year_level") {
-      return false;
-    }
-    return true;
-  }
-
-  const handleAddUser = () => {
-    append({
-      id: "",
-      firstName: "",
-      lastName: "",
-      yearLevel: undefined,
-      college: "",
-      program: "",
-      email: "",
-      password: "",
-      contactNumber: "",
-      role: role || "",
-    });
-  };
-
-  const handleRemoveUser = (index: number) => {
-    remove(index);
   };
 
   const handleSubmit = async (data: UsersFormData) => {
@@ -166,227 +114,11 @@ export default function UsersForm({ role }: UsersFormProps) {
           />
         </div>
 
-        {fields.map((field, index) => {
-          // Compute selected college and programs for current user
-          const selectedCollege = form.watch(`users.${index}.college`) || null;
-          const programsForSelectedCollege =
-            colleges.find((college) => college.name === selectedCollege)
-              ?.programs || [];
-
-          return (
-            <div key={field.id} className="space-y-4 border p-4 rounded-md">
-              <h3>User {index + 1}</h3>
-
-              {/* ID Number Field */}
-              {isFieldVisible("idnum") && (
-                <FormField
-                  control={form.control}
-                  name={`users.${index}.id` as const}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>ID Number</FormLabel>
-                      <FormControl>
-                        <Input placeholder="ID Number" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-
-              {/* First Name Field */}
-              <FormField
-                control={form.control}
-                name={`users.${index}.firstName` as const}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>First Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="First Name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Last Name Field */}
-              <FormField
-                control={form.control}
-                name={`users.${index}.lastName` as const}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Last Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Last Name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Year Level Field */}
-              {isFieldVisible("year_level") && (
-                <FormField
-                  control={form.control}
-                  name={`users.${index}.yearLevel` as const}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Year Level</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="Year Level"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-
-              {/* College Field */}
-              {isFieldVisible("college") && (
-                <FormField
-                  control={form.control}
-                  name={`users.${index}.college` as const}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>College</FormLabel>
-                      <Select
-                        onValueChange={(value) => {
-                          field.onChange(value);
-                          form.setValue(`users.${index}.program`, ""); // Reset program
-                        }}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select College" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {colleges.map((college) => (
-                            <SelectItem
-                              key={college.shortname}
-                              value={college.name}
-                            >
-                              {college.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-
-              {/* Program Field */}
-              {isFieldVisible("program") && (
-                <FormField
-                  control={form.control}
-                  name={`users.${index}.program` as const}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Program</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        disabled={!selectedCollege}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select Program" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {programsForSelectedCollege.length > 0 ? (
-                            programsForSelectedCollege.map((program) => (
-                              <SelectItem
-                                key={program.shortname}
-                                value={program.name}
-                              >
-                                {program.name}
-                              </SelectItem>
-                            ))
-                          ) : (
-                            <SelectItem value="none">
-                              No programs available
-                            </SelectItem>
-                          )}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-
-              {/* Email Field */}
-              <FormField
-                control={form.control}
-                name={`users.${index}.email` as const}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Email" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Password Field */}
-              <FormField
-                control={form.control}
-                name={`users.${index}.password` as const}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Phone Number Field */}
-              <FormField
-                control={form.control}
-                name={`users.${index}.contactNumber` as const}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone Number</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Phone Number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Remove User Button */}
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={() => handleRemoveUser(index)}
-              >
-                Remove User
-              </Button>
-            </div>
-          );
-        })}
-
-        <Button type="button" onClick={handleAddUser}>
-          Add New User
-        </Button>
+        <div className="text-lg font-semibold">
+          {userCount > 0
+            ? `${userCount} users total.`
+            : "No users uploaded yet."}
+        </div>
 
         <Button type="submit">Submit</Button>
       </form>

@@ -25,7 +25,7 @@ export async function createAdmin(data: AdminFormData) {
 export async function getAdmins() {
   try {
     return await prisma.user.findMany({
-      where: { role: "ADMIN" },
+      where: { role: "Admin" },
     });
   } catch (error) {
     console.log(error);
