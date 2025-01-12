@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// prisma/schema.prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // uncomment next line if you use Prisma <5.10
+  // directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+enum Role {
+  STUDENT
+  FACULTY
+  ADMIN
+}
+
+model User {
+  id            String  @id @default(uuid())
+  email         String  @unique
+  contactNumber String?
+  password      String
+  role          Role
+  firstName     String?
+  lastName      String?
+  college       String?
+  program       String?
+  yearLevel     Int?
+  schoolId      String?
+}
+
+model Reviewer {
+  id          String     @id @default(uuid())
+  title       String
+  description String?
+  college     String
+  program     String     @unique
+  status      String
+  dateCreated DateTime   @default(now())
+  Topic       Topic[]
+  Question    Question[]
+}
+
+model Topic {
+  id          String     @id @default(uuid())
+  title       String
+  description String?
+  reviewerId  String
+  reviewer    Reviewer   @relation(fields: [reviewerId], references: [id])
+  Subtopic    Subtopic[]
+  Question    Question[]
+}
+
+model Subtopic {
+  id          String     @id @default(uuid())
+  title       String
+  description String?
+  topicId     String
+  topic       Topic      @relation(fields: [topicId], references: [id])
+  Question    Question[]
+}
+
+model Question {
+  id              String            @id @default(uuid())
+  content         String
+  correctAnswer   String
+  subtopicId      String?
+  subtopic        Subtopic?         @relation(fields: [subtopicId], references: [id])
+  topicId         String?
+  Topic           Topic?            @relation(fields: [topicId], references: [id])
+  reviewerId      String
+  Reviewer        Reviewer          @relation(fields: [reviewerId], references: [id])
+  QuestionChoices QuestionChoices[]
+}
+
+model QuestionChoices {
+  id         String   @id @default(uuid())
+  content    String
+  index      String
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id])
+}
