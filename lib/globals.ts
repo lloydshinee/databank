@@ -125,3 +125,18 @@ export interface Faculty {
   college: string;
   schoolId: string | null;
 }
+
+export interface Topic {
+  id: string; // Topic ID
+  title: string; // Title of the topic
+  description?: string | null | undefined; // Optional description for the topic
+  reviewerId: string; // Reviewer ID, relates to the reviewer
+  Subtopic: Subtopic[]; // Array of subtopics
+}
+
+export interface Subtopic {
+  id: string; // Subtopic ID
+  title: string; // Title of the subtopic
+  description?: string | null | undefined; // Optional description for the subtopic
+  topicId: string; // Topic ID, relates to the parent topic
+}

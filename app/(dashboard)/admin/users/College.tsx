@@ -22,7 +22,7 @@ export default function College() {
             }
             className={`${
               selectedCollege == college.name ? "bg-primary text-white" : ""
-            } p-4 rounded-md text-center cursor-pointer`}
+            } p-4 rounded-md text-center cursor-pointer transition-all`}
           >
             <img src={college.image} className="h-20" />
             {college.shortname}

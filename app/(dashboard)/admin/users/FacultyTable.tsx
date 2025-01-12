@@ -22,7 +22,7 @@ export default function StudentsTable({ college }: { college: string | null }) {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  const fetchStudents = async () => {
+  const fetchFaculty = async () => {
     setLoading(true);
     try {
       const { faculty, totalCount } = await getFacultys({
@@ -40,7 +40,7 @@ export default function StudentsTable({ college }: { college: string | null }) {
   };
 
   useEffect(() => {
-    fetchStudents();
+    fetchFaculty();
   }, [college, page]);
 
   return (
@@ -58,7 +58,7 @@ export default function StudentsTable({ college }: { college: string | null }) {
           }}
           className="w-full"
         />
-        <Button onClick={fetchStudents} variant="ghost">
+        <Button onClick={fetchFaculty} variant="ghost">
           Search
         </Button>
       </div>
