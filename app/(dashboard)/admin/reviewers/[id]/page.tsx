@@ -4,6 +4,7 @@ import { TopicForm } from "@/components/forms/TopicForm";
 import Header from "@/components/Header";
 import { Topics } from "./Topics";
 import Questions from "./Questions";
+import ReviewerBanner from "@/components/ReviewerBanner";
 
 export default async function ReviewerPage({
   params,
@@ -18,6 +19,7 @@ export default async function ReviewerPage({
   return (
     <main className="space-y-4">
       <Header title={reviewer.title}></Header>
+      <ReviewerBanner reviewer={reviewer} />
       <FormModal title="Add Topic">
         <TopicForm reviewerId={params.id} />
       </FormModal>

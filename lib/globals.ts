@@ -96,6 +96,14 @@ export interface Program {
   shortname: string;
 }
 
+export interface Reviewer {
+  title: string;
+  college: string;
+  description: string | null;
+  program: string;
+  status: string;
+}
+
 export interface College {
   name: string;
   shortname: string;

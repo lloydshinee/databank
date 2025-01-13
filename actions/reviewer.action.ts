@@ -46,9 +46,9 @@ export async function getCollegeReviewers(college: string) {
 
 export async function getProgramReviewer(program: string) {
   try {
-    return await prisma.reviewer.findMany({ where: { program } });
+    return await prisma.reviewer.findUnique({ where: { program } });
   } catch (error) {
     console.log(error);
-    return [];
+    return null;
   }
 }

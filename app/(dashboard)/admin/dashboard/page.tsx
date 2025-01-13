@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import { AdminList } from "./AdminList";
 import { Suspense } from "react";
 import { FormModal } from "@/components/FormModal";
+import Notice from "@/components/Notice";
 
 export default function AdminDashboard() {
   return (
@@ -14,6 +15,7 @@ export default function AdminDashboard() {
       <Suspense fallback={<>Loading Admins</>}>
         <AdminList />
       </Suspense>
+      <Notice />
     </main>
   );
 }

@@ -1,6 +1,8 @@
 import { getProgramReviewer } from "@/actions/reviewer.action";
 import { getAccount } from "@/actions/user.action";
 import { auth } from "@/auth";
+import Header from "@/components/Header";
+import ReviewerBanner from "@/components/ReviewerBanner";
 
 export default async function ReviewerPage() {
   const session = await auth();
@@ -10,13 +12,13 @@ export default async function ReviewerPage() {
   const reviewer = await getProgramReviewer(user.program as string);
 
   return (
-    <div>
-      ReviewerPage
+    <main className="space-y-5">
+      <Header title={`${user.college} - ${user.program} Reviewer`} />
       {reviewer ? (
-        <pre>{JSON.stringify(reviewer, null, 2)}</pre>
+        <ReviewerBanner reviewer={reviewer} />
       ) : (
         "Your program doesn't have a reivewer"
       )}
-    </div>
+    </main>
   );
 }
