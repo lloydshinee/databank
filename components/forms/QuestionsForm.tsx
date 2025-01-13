@@ -9,8 +9,10 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { toast } from "@/hooks/use-toast";
+import { createQuestions } from "@/actions/question.action";
 
 const questionSchema = z.object({
+  id: z.string().optional(),
   content: z.string().min(1, "Question content is required"),
   correctAnswer: z.string().min(1, "Correct answer is required"),
   points: z.number().min(1, "Question points must be at least 1"),
@@ -106,6 +108,7 @@ export default function QuestionsForm({ reviewerId }: { reviewerId: string }) {
 
   const handleSubmit = async (data: QuestionsFormData) => {
     console.log("Submitted Data:", data);
+    await createQuestions(data);
     toast({
       title: "Success",
       description: "Questions submitted successfully",

@@ -7,6 +7,7 @@ export async function Topics({ reviewer }: { reviewer: ReviewerType }) {
 
   return (
     <section>
+      <h1 className="font-bold">Topics</h1>
       <TopicTable data={topics} />
     </section>
   );

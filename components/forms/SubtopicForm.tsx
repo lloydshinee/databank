@@ -13,37 +13,43 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { createTopic } from "@/actions/topic.action";
-import { Topic } from "@/lib/globals";
+import { Subtopic } from "@/lib/globals";
+import { createSubtopic } from "@/actions/subtopic.action";
 
-const reviewerFormSchema = z.object({
+// Subtopic validation schema
+const subtopicSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1, "Title is required"),
-  description: z.string().optional(),
-  reviewerId: z.string().min(1, "Reviewer ID is required"),
+  description: z.string().optional(), // Allow null for description
+  topicId: z.string().min(1, "Topic ID is required"), // Ensure topicId is provided
 });
 
-export type TopicFormData = z.infer<typeof reviewerFormSchema>;
+export type SubtopicFormData = z.infer<typeof subtopicSchema>;
 
-export function TopicForm({
-  reviewerId,
+export default function SubtopicForm({
+  topicId,
   data,
 }: {
-  reviewerId: string;
-  data?: Topic;
+  topicId: string;
+  data?: Subtopic;
 }) {
-  const form = useForm<TopicFormData>({
-    resolver: zodResolver(reviewerFormSchema),
+  const form = useForm<SubtopicFormData>({
+    resolver: zodResolver(subtopicSchema),
     defaultValues: {
-      title: data?.title || "", // Use data's title if available, otherwise empty string
-      description: data?.description || "", // Use data's description if available
-      reviewerId,
+      id: data?.id || undefined,
+      title: data?.title || "", // Pre-fill with existing title if editing
+      description: data?.description || "", // Pre-fill with existing description if editing
+      topicId, // Always associate with the provided topicId
     },
   });
 
-  const onSubmit = async (data: TopicFormData) => {
-    await createTopic(data);
-    console.log("Form Data:", data);
+  const onSubmit = async (data: SubtopicFormData) => {
+    try {
+      await createSubtopic(data); // Replace with your API call for subtopics
+      console.log("Subtopic saved:", data);
+    } catch (error) {
+      console.error("Error saving subtopic:", error);
+    }
   };
 
   return (
@@ -57,12 +63,13 @@ export function TopicForm({
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
-                <Input placeholder="Topic Title" {...field} />
+                <Input placeholder="Subtopic Title" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
         {/* Description Field */}
         <FormField
           control={form.control}
@@ -71,17 +78,15 @@ export function TopicForm({
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Input placeholder="Topic Description" {...field} />
+                <Input placeholder="Subtopic Description" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        {/* Reviewer ID Field (hidden) */}
-        <input type="hidden" {...form.register("reviewerId")} />
 
         {/* Submit Button */}
-        <Button type="submit">Submit</Button>
+        <Button type="submit">Save Subtopic</Button>
       </form>
     </Form>
   );

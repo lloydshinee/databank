@@ -131,7 +131,7 @@ export interface Topic {
   title: string; // Title of the topic
   description?: string | null | undefined; // Optional description for the topic
   reviewerId: string; // Reviewer ID, relates to the reviewer
-  Subtopic: Subtopic[]; // Array of subtopics
+  subtopics: Subtopic[]; // Array of subtopics
 }
 
 export interface Subtopic {
@@ -139,4 +139,22 @@ export interface Subtopic {
   title: string; // Title of the subtopic
   description?: string | null | undefined; // Optional description for the subtopic
   topicId: string; // Topic ID, relates to the parent topic
+}
+
+export interface Question {
+  id: string;
+  content: string;
+  correctAnswer: string;
+  subtopicId?: string;
+  topicId?: string;
+  reviewerId: string;
+  points: number;
+  choices: QuestionChoice[];
+}
+
+export interface QuestionChoice {
+  id: string;
+  content: string;
+  index: string;
+  questionId: string;
 }

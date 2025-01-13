@@ -16,7 +16,7 @@ export default async function ReviewerPage({
   if (!reviewer) return;
 
   return (
-    <main>
+    <main className="space-y-4">
       <Header title={reviewer.title}></Header>
       <FormModal title="Add Topic">
         <TopicForm reviewerId={params.id} />

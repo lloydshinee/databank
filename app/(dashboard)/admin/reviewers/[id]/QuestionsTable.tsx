@@ -1,3 +1,136 @@
-export function QuestionsTable() {
-  return <div>QuestionsTable</div>;
+"use client";
+
+import { useState, useEffect } from "react";
+import { Input } from "@/components/ui/input"; // Assuming ShadCN input component
+import { Button } from "@/components/ui/button"; // Assuming ShadCN button component
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableCell,
+  TableBody,
+} from "@/components/ui/table"; // ShadCN table components
+import { getQuestions } from "@/actions/question.action"; // Assuming you have a function to fetch questions
+import { FormModal } from "@/components/FormModal";
+import QuestionForm from "@/components/forms/QuestionForm"; // Form to create/edit questions
+import { AssignTopic } from "./AssignTopic";
+import { Question } from "@/lib/globals";
+
+export default function QuestionsTable({ reviewerId }: { reviewerId: string }) {
+  const [questions, setQuestions] = useState<any[]>([]);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  const fetchQuestions = async () => {
+    setLoading(true);
+    try {
+      const { questions, totalCount } = await getQuestions({
+        reviewerId,
+        search,
+        page,
+        limit: 5, // Define the limit per page
+      });
+      setQuestions(questions);
+      setTotalPages(Math.ceil(totalCount / 5)); // Correctly calculate the totalPages
+    } catch (error) {
+      console.error("Error fetching questions:", error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchQuestions();
+  }, [page]);
+
+  return (
+    <div className="space-y-5">
+      <FormModal title="Create Question">
+        <QuestionForm reviewerId={reviewerId} />
+      </FormModal>
+      <div className="flex items-center gap-4 mb-4">
+        <Input
+          placeholder="Search questions"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(1); // Reset to page 1 when searching
+          }}
+          className="w-full"
+        />
+        <Button onClick={fetchQuestions} variant="ghost">
+          Search
+        </Button>
+      </div>
+
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableCell>Content</TableCell>
+            <TableCell>Correct Answer</TableCell>
+            <TableCell>Points</TableCell>
+            <TableCell>Topic</TableCell>
+            <TableCell>Action</TableCell>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {loading ? (
+            <TableRow>
+              <TableCell colSpan={4} className="text-center">
+                Loading...
+              </TableCell>
+            </TableRow>
+          ) : questions.length > 0 ? (
+            questions.map((question: Question) => (
+              <TableRow key={question.id}>
+                <TableCell>{question.content}</TableCell>
+                <TableCell>{question.correctAnswer}</TableCell>
+                <TableCell>{question.points}</TableCell>
+                <TableCell>
+                  <AssignTopic
+                    reviewerId={question.reviewerId}
+                    questionId={question.id}
+                    data={{
+                      topicId: question.topicId,
+                      subtopicId: question.subtopicId,
+                    }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <FormModal title="Edit Question">
+                    <QuestionForm reviewerId={reviewerId} data={question} />
+                  </FormModal>
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={4} className="text-center">
+                No questions found.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+
+      <div className="flex justify-between items-center mt-4">
+        <Button
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          disabled={page === 1}
+        >
+          Previous
+        </Button>
+        <span>
+          Page {page} of {totalPages}
+        </span>
+        <Button
+          onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={page === totalPages}
+        >
+          Next
+        </Button>
+      </div>
+    </div>
+  );
 }
