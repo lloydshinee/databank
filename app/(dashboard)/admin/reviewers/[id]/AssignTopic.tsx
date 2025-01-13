@@ -14,10 +14,12 @@ import { assignTopic } from "@/actions/question.action";
 
 export function AssignTopic({
   questionId,
+  questionStatus,
   reviewerId,
   data,
 }: {
   questionId: string;
+  questionStatus: string;
   reviewerId: string;
   data: { topicId: string | undefined; subtopicId: string | undefined };
 }) {
@@ -28,6 +30,8 @@ export function AssignTopic({
   const [selectedSubtopic, setSelectedSubtopic] = useState<string | undefined>(
     undefined
   );
+
+  const [isInitialRender, setIsInitialRender] = useState(true);
 
   // Fetch Topics based on reviewerId
   const fetchTopics = async () => {
@@ -65,6 +69,11 @@ export function AssignTopic({
 
   // Effect to update topic when selectedTopic or selectedSubtopic changes
   useEffect(() => {
+    if (isInitialRender) {
+      setIsInitialRender(false);
+      return;
+    }
+
     if (selectedTopic !== null) {
       updateTopicAndSubtopic(selectedTopic, selectedSubtopic);
     }
@@ -73,6 +82,8 @@ export function AssignTopic({
   // Get the subtopics for the selected topic
   const selectedTopicData = topics.find((topic) => topic.id === selectedTopic);
   const subtopics = selectedTopicData?.subtopics || [];
+
+  const isLocked = questionStatus === "Locked";
 
   return (
     <div className="flex gap-4">
@@ -85,7 +96,7 @@ export function AssignTopic({
             setSelectedSubtopic(undefined); // Reset subtopic when topic changes
           }}
         >
-          <SelectTrigger>
+          <SelectTrigger disabled={isLocked}>
             <SelectValue placeholder="Choose a topic" />
           </SelectTrigger>
           <SelectContent>
@@ -103,7 +114,7 @@ export function AssignTopic({
             value={selectedSubtopic || ""}
             onValueChange={setSelectedSubtopic}
           >
-            <SelectTrigger>
+            <SelectTrigger disabled={isLocked}>
               <SelectValue placeholder="Choose a subtopic" />
             </SelectTrigger>
             <SelectContent>

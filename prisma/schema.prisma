@@ -60,6 +60,7 @@ model Question {
   content       String
   correctAnswer String
   points        Int
+  status        String            @default("Unlocked")
   subtopicId    String?
   subtopic      Subtopic?         @relation(fields: [subtopicId], references: [id])
   topicId       String?

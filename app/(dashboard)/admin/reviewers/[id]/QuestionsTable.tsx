@@ -15,6 +15,8 @@ import { FormModal } from "@/components/FormModal";
 import QuestionForm from "@/components/forms/QuestionForm"; // Form to create/edit questions
 import { AssignTopic } from "./AssignTopic";
 import { Question } from "@/lib/globals";
+import QuestionLock from "./QuestionLock";
+import QuestionsForm from "@/components/forms/QuestionsForm";
 
 export default function QuestionsTable({ reviewerId }: { reviewerId: string }) {
   const [questions, setQuestions] = useState<any[]>([]);
@@ -46,9 +48,14 @@ export default function QuestionsTable({ reviewerId }: { reviewerId: string }) {
 
   return (
     <div className="space-y-5">
-      <FormModal title="Create Question">
-        <QuestionForm reviewerId={reviewerId} />
-      </FormModal>
+      <div className="flex gap-3">
+        <FormModal title="Create Question">
+          <QuestionForm reviewerId={reviewerId} />
+        </FormModal>
+        <FormModal title="Import from Excel">
+          <QuestionsForm reviewerId={reviewerId} />
+        </FormModal>
+      </div>
       <div className="flex items-center gap-4 mb-4">
         <Input
           placeholder="Search questions"
@@ -91,16 +98,23 @@ export default function QuestionsTable({ reviewerId }: { reviewerId: string }) {
                   <AssignTopic
                     reviewerId={question.reviewerId}
                     questionId={question.id}
+                    questionStatus={question.status}
                     data={{
                       topicId: question.topicId,
                       subtopicId: question.subtopicId,
                     }}
                   />
                 </TableCell>
-                <TableCell>
-                  <FormModal title="Edit Question">
-                    <QuestionForm reviewerId={reviewerId} data={question} />
-                  </FormModal>
+                <TableCell className="flex gap-4">
+                  {question.status == "Unlocked" && (
+                    <FormModal title="Edit Question">
+                      <QuestionForm reviewerId={reviewerId} data={question} />
+                    </FormModal>
+                  )}
+                  <QuestionLock
+                    questionId={question.id}
+                    status={question.status}
+                  />
                 </TableCell>
               </TableRow>
             ))

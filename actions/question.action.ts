@@ -134,3 +134,15 @@ export async function assignTopic(
     console.log(error);
   }
 }
+
+export async function updateQuestionStatus(questionId: string, status: string) {
+  try {
+    await prisma.question.update({
+      where: { id: questionId },
+      data: { status },
+    });
+    console.log("Updated");
+  } catch (error) {
+    console.log(error);
+  }
+}

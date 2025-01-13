@@ -34,3 +34,21 @@ export async function getReviewer(id: string) {
     return null;
   }
 }
+
+export async function getCollegeReviewers(college: string) {
+  try {
+    return await prisma.reviewer.findMany({ where: { college } });
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
+export async function getProgramReviewer(program: string) {
+  try {
+    return await prisma.reviewer.findMany({ where: { program } });
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}

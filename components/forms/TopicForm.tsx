@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { createTopic } from "@/actions/topic.action";
+import { upsertTopic } from "@/actions/topic.action";
 import { Topic } from "@/lib/globals";
 
 const reviewerFormSchema = z.object({
@@ -35,6 +35,7 @@ export function TopicForm({
   const form = useForm<TopicFormData>({
     resolver: zodResolver(reviewerFormSchema),
     defaultValues: {
+      id: data?.id || undefined,
       title: data?.title || "", // Use data's title if available, otherwise empty string
       description: data?.description || "", // Use data's description if available
       reviewerId,
@@ -42,7 +43,7 @@ export function TopicForm({
   });
 
   const onSubmit = async (data: TopicFormData) => {
-    await createTopic(data);
+    await upsertTopic(data);
     console.log("Form Data:", data);
   };
 

@@ -147,6 +147,7 @@ export interface Question {
   correctAnswer: string;
   subtopicId?: string;
   topicId?: string;
+  status: string;
   reviewerId: string;
   points: number;
   choices: QuestionChoice[];

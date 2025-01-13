@@ -4,15 +4,27 @@ import { TopicFormData } from "@/components/forms/TopicForm";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-export async function createTopic(data: TopicFormData) {
+export async function upsertTopic(data: TopicFormData) {
   try {
-    await prisma.topic.create({
-      data,
+    await prisma.topic.upsert({
+      where: {
+        id: data.id || "", // Use `id` as the unique identifier. Provide an empty string if `id` is undefined.
+      },
+      create: {
+        title: data.title,
+        description: data.description,
+        reviewerId: data.reviewerId,
+      },
+      update: {
+        title: data.title,
+        description: data.description,
+        reviewerId: data.reviewerId,
+      },
     });
-    console.log("Topic and subtopics created successfully!");
+    console.log("Topic upserted successfully!");
     revalidatePath("/");
   } catch (error) {
-    console.error("Error creating topic:", error);
+    console.error("Error upserting topic:", error);
   }
 }
 
