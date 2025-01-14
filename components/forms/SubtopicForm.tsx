@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Subtopic } from "@/lib/globals";
-import { createSubtopic } from "@/actions/subtopic.action";
+import { upsertSubtopic } from "@/actions/subtopic.action";
 
 // Subtopic validation schema
 const subtopicSchema = z.object({
@@ -45,7 +45,7 @@ export default function SubtopicForm({
 
   const onSubmit = async (data: SubtopicFormData) => {
     try {
-      await createSubtopic(data); // Replace with your API call for subtopics
+      await upsertSubtopic(data); // Replace with your API call for subtopics
       console.log("Subtopic saved:", data);
     } catch (error) {
       console.error("Error saving subtopic:", error);
