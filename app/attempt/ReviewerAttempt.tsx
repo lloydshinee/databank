@@ -15,8 +15,9 @@ export function ReviewerAttempt() {
   };
 
   useEffect(() => {
+    if (!attemptId) return;
     fetchAttempt();
-  }, []);
+  }, [attemptId]);
 
   return (
     <div>
