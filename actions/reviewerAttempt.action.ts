@@ -40,13 +40,13 @@ export async function createReviewerAttempt(data: ReviewerAttemptFormData) {
         questionAmount,
         timeLimit,
         expiresAt,
-        ReviewerAttemptScope: {
+        scopes: {
           create: scope.map(({ topicId, subtopicId }) => ({
             topicId,
             subtopicId,
           })),
         },
-        ReviewerAttemptQuestion: {
+        questions: {
           create: questionsToAssign.map((questionId) => ({
             questionId,
           })),
@@ -86,13 +86,13 @@ export async function getReviewerAttempt(attemptId: string) {
     const reviewerAttempt = await prisma.reviewerAttempt.findUnique({
       where: { id: attemptId },
       include: {
-        ReviewerAttemptScope: {
+        scopes: {
           include: {
             topic: true,
             subtopic: true,
           },
         },
-        ReviewerAttemptQuestion: {
+        questions: {
           include: {
             question: {
               include: {

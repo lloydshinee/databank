@@ -167,3 +167,31 @@ export interface QuestionChoice {
   index: string;
   questionId: string;
 }
+
+export interface ReviewerAttempt {
+  id: string;
+  reviewerId: string;
+  userId: string;
+  status: string;
+  score: number;
+  dateCreated: Date;
+  expiresAt: Date;
+  questionAmount: number;
+  timeLimit: number;
+  questions: ReviewerAttemptQuestion[];
+  scopes: ReviewerAttemptScope[];
+}
+
+export interface ReviewerAttemptScope {
+  id: string;
+  topicId: string;
+  subtopicId?: string | null;
+  attemptId: string;
+}
+
+export interface ReviewerAttemptQuestion {
+  id: string;
+  questionId: string;
+  attemptId: string;
+  userAnswer?: string | null;
+}

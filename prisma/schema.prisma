@@ -11,31 +11,31 @@ datasource db {
 }
 
 model User {
-  id              String            @id @default(uuid())
-  email           String            @unique
-  contactNumber   String?
-  password        String
-  role            String
-  firstName       String?
-  lastName        String?
-  college         String?
-  program         String?
-  yearLevel       Int?
-  schoolId        String?
-  ReviewerAttempt ReviewerAttempt[]
+  id            String            @id @default(uuid())
+  email         String            @unique
+  contactNumber String?
+  password      String
+  role          String
+  firstName     String?
+  lastName      String?
+  college       String?
+  program       String?
+  yearLevel     Int?
+  schoolId      String?
+  attempts      ReviewerAttempt[]
 }
 
 model Reviewer {
-  id              String            @id @default(uuid())
-  title           String
-  description     String?
-  college         String
-  program         String            @unique
-  status          String
-  dateCreated     DateTime          @default(now())
-  topics          Topic[]
-  questions       Question[]
-  ReviewerAttempt ReviewerAttempt[]
+  id          String            @id @default(uuid())
+  title       String
+  description String?
+  college     String
+  program     String            @unique
+  status      String
+  dateCreated DateTime          @default(now())
+  topics      Topic[]
+  questions   Question[]
+  attempts    ReviewerAttempt[]
 }
 
 model Topic {
@@ -94,10 +94,10 @@ model ReviewerAttempt {
   questionAmount Int
   timeLimit      Float
 
-  reviewer                Reviewer                  @relation(fields: [reviewerId], references: [id])
-  user                    User                      @relation(fields: [userId], references: [id])
-  ReviewerAttemptQuestion ReviewerAttemptQuestion[]
-  ReviewerAttemptScope    ReviewerAttemptScope[]
+  reviewer  Reviewer                  @relation(fields: [reviewerId], references: [id])
+  user      User                      @relation(fields: [userId], references: [id])
+  questions ReviewerAttemptQuestion[]
+  scopes    ReviewerAttemptScope[]
 }
 
 model ReviewerAttemptScope {
