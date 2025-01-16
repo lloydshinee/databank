@@ -21,7 +21,10 @@ export function AssignTopic({
   questionId: string;
   questionStatus: string;
   reviewerId: string;
-  data: { topicId: string | undefined; subtopicId: string | undefined };
+  data: {
+    topicId: string | undefined | null;
+    subtopicId: string | undefined | null;
+  };
 }) {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<string | undefined>(

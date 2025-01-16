@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import { Topics } from "./Topics";
 import Questions from "./Questions";
 import ReviewerBanner from "@/components/ReviewerBanner";
+import { Attempts } from "./Attempts";
 
 export default async function ReviewerPage({
   params,
@@ -25,6 +26,7 @@ export default async function ReviewerPage({
       </FormModal>
       <Topics reviewer={reviewer} />
       <Questions reviewerId={reviewer.id} />
+      <Attempts reviewerId={reviewer.id} />
     </main>
   );
 }

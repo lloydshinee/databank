@@ -4,8 +4,7 @@ import { auth } from "@/auth";
 import Header from "@/components/Header";
 import ReviewerBanner from "@/components/ReviewerBanner";
 import { Topics } from "./Topics";
-import { ReviewerAttemptForm } from "@/components/forms/ReviewerAttemptForm";
-import { FormModal } from "@/components/FormModal";
+import { Attempt } from "./Attempt";
 
 export default async function ReviewerPage() {
   const session = await auth();
@@ -21,9 +20,7 @@ export default async function ReviewerPage() {
       <Header title={`${user.college} Reviewer`} />
       <ReviewerBanner reviewer={reviewer} />
       <Topics reviewerId={reviewer.id} />
-      <FormModal title="Attempt Reviewer">
-        <ReviewerAttemptForm reviewerId={reviewer.id} />
-      </FormModal>
+      <Attempt reviewerId={reviewer.id} />
     </main>
   );
 }

@@ -114,13 +114,13 @@ export interface College {
 
 export interface Student {
   id: string;
-  firstName: string;
+  firstName: string | null;
   email: string;
   contactNumber: string | null;
-  lastName: string;
-  yearLevel: number;
-  college: string;
-  program: string;
+  lastName: string | null;
+  yearLevel: number | null;
+  college: string | null;
+  program: string | null;
   schoolId: string | null;
 }
 
@@ -153,8 +153,8 @@ export interface Question {
   id: string;
   content: string;
   correctAnswer: string;
-  subtopicId?: string;
-  topicId?: string;
+  subtopicId?: string | null;
+  topicId?: string | null;
   status: string;
   reviewerId: string;
   points: number;
@@ -178,8 +178,9 @@ export interface ReviewerAttempt {
   expiresAt: Date;
   questionAmount: number;
   timeLimit: number;
-  questions: ReviewerAttemptQuestion[];
-  scopes: ReviewerAttemptScope[];
+  user: Student;
+  questions?: ReviewerAttemptQuestion[];
+  scopes?: ReviewerAttemptScope[];
 }
 
 export interface ReviewerAttemptScope {
@@ -187,6 +188,8 @@ export interface ReviewerAttemptScope {
   topicId: string;
   subtopicId?: string | null;
   attemptId: string;
+  topic: { title: string } | null;
+  subtopic: { title: string } | null;
 }
 
 export interface ReviewerAttemptQuestion {
@@ -194,4 +197,6 @@ export interface ReviewerAttemptQuestion {
   questionId: string;
   attemptId: string;
   userAnswer?: string | null;
+  number: number;
+  question: Question;
 }

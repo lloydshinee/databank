@@ -77,6 +77,30 @@ export function ReviewerAttemptForm({ reviewerId }: { reviewerId: string }) {
 
   const scope = watch("scope");
 
+  const handleTopicSelection = (topicId: string) => {
+    const isTopicSelected = scope.some((s) => s.topicId === topicId);
+    if (isTopicSelected) {
+      setValue(
+        "scope",
+        scope.filter((s) => s.topicId !== topicId)
+      );
+    } else {
+      setValue("scope", [...scope, { topicId, subtopicId: undefined }]);
+    }
+  };
+
+  const handleSubtopicSelection = (topicId: string, subtopicId: string) => {
+    const isSubtopicSelected = scope.some(
+      (s) => s.topicId === topicId && s.subtopicId === subtopicId
+    );
+    const updatedScope = isSubtopicSelected
+      ? scope.filter(
+          (s) => !(s.topicId === topicId && s.subtopicId === subtopicId)
+        )
+      : [...scope, { topicId, subtopicId }];
+    setValue("scope", updatedScope);
+  };
+
   return (
     <FormProvider {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -100,33 +124,23 @@ export function ReviewerAttemptForm({ reviewerId }: { reviewerId: string }) {
         <div>
           <Label>Topics</Label>
           {availableTopics.map((topic) => {
-            const isSelected = scope.some((s) => s.topicId === topic.id);
+            const isTopicSelected = scope.some((s) => s.topicId === topic.id);
 
             return (
               <div key={topic.id} className="mb-4">
-                <div>
-                  <input
-                    type="checkbox"
-                    onChange={(e) => {
-                      const checked = e.target.checked;
-                      if (checked) {
-                        setValue("scope", [
-                          ...scope,
-                          { topicId: topic.id, subtopicId: undefined },
-                        ]);
-                      } else {
-                        setValue(
-                          "scope",
-                          scope.filter((s) => s.topicId !== topic.id)
-                        );
-                      }
-                    }}
-                    checked={isSelected}
-                  />
+                <div
+                  className={`cursor-pointer p-2 border ${
+                    isTopicSelected ? "bg-blue-200" : "bg-gray-100"
+                  }`}
+                  onClick={() => {
+                    if (topic.subtopics.length === 0) {
+                      handleTopicSelection(topic.id);
+                    }
+                  }}
+                >
                   <span>{topic.title}</span>
                 </div>
-
-                {topic.subtopics.length > 0 && isSelected && (
+                {topic.subtopics.length > 0 && (
                   <div className="ml-4">
                     <Label>Subtopics</Label>
                     {topic.subtopics.map((subtopic) => {
@@ -134,33 +148,18 @@ export function ReviewerAttemptForm({ reviewerId }: { reviewerId: string }) {
                         (s) =>
                           s.topicId === topic.id && s.subtopicId === subtopic.id
                       );
-
                       return (
-                        <div key={subtopic.id}>
+                        <div
+                          key={subtopic.id}
+                          className="cursor-pointer p-2 border"
+                          onClick={() =>
+                            handleSubtopicSelection(topic.id, subtopic.id)
+                          }
+                        >
                           <input
                             type="checkbox"
-                            onChange={(e) => {
-                              const checked = e.target.checked;
-                              const updatedScope = checked
-                                ? [
-                                    ...scope.filter(
-                                      (s) => s.topicId !== topic.id
-                                    ),
-                                    {
-                                      topicId: topic.id,
-                                      subtopicId: subtopic.id,
-                                    },
-                                  ]
-                                : scope.filter(
-                                    (s) =>
-                                      !(
-                                        s.topicId === topic.id &&
-                                        s.subtopicId === subtopic.id
-                                      )
-                                  );
-                              setValue("scope", updatedScope);
-                            }}
                             checked={isSubtopicSelected}
+                            readOnly
                           />
                           <span>{subtopic.title}</span>
                         </div>

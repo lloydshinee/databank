@@ -7,7 +7,6 @@ export async function createReviewerAttempt(data: ReviewerAttemptFormData) {
   try {
     const { reviewerId, userId, scope, timeLimit, questionAmount } = data;
 
-    // Calculate expiresAt
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + timeLimit);
 
@@ -47,7 +46,8 @@ export async function createReviewerAttempt(data: ReviewerAttemptFormData) {
           })),
         },
         questions: {
-          create: questionsToAssign.map((questionId) => ({
+          create: questionsToAssign.map((questionId, i) => ({
+            number: i,
             questionId,
           })),
         },
@@ -92,6 +92,7 @@ export async function getReviewerAttempt(attemptId: string) {
             subtopic: true,
           },
         },
+        user: true,
         questions: {
           include: {
             question: {
@@ -100,13 +101,104 @@ export async function getReviewerAttempt(attemptId: string) {
               },
             },
           },
+          orderBy: {
+            number: "asc",
+          },
         },
       },
     });
-
     return reviewerAttempt;
   } catch (error) {
     console.log(error);
     return null;
+  }
+}
+
+export async function getOngoingAttempt(userId: string) {
+  try {
+    // Fetch the ongoing attempt
+    const attempt = await prisma.reviewerAttempt.findFirst({
+      where: {
+        userId, // Ensure the attempt belongs to the provided userId
+        status: "Ongoing",
+      },
+    });
+    // If no ongoing attempt exists, return null
+    if (!attempt) {
+      return null;
+    }
+    // Check if the attempt has expired
+    const now = new Date();
+    if (new Date(attempt.expiresAt) <= now) {
+      // If expired, update the status to "Expired"
+      await prisma.reviewerAttempt.update({
+        where: { id: attempt.id },
+        data: { status: "Expired" },
+      });
+      return null; // Return null for expired attempts
+    }
+    // If not expired, return the attempt
+    return attempt;
+  } catch (error) {
+    console.log(error);
+    return null; // Handle errors gracefully
+  }
+}
+
+export async function getReviewerAttempts({
+  reviewerId,
+  search,
+  page = 1,
+  limit = 10,
+}: {
+  reviewerId: string;
+  search?: string;
+  page?: number;
+  limit?: number;
+}) {
+  try {
+    const skip = (page - 1) * limit;
+
+    // First, get the total count of matching reviewer attempts
+    const totalCount = await prisma.reviewerAttempt.count({
+      where: {
+        reviewerId,
+        ...(search && {
+          user: {
+            OR: [
+              { schoolId: { contains: search, mode: "insensitive" } },
+              { firstName: { contains: search, mode: "insensitive" } },
+              { lastName: { contains: search, mode: "insensitive" } },
+            ],
+          },
+        }),
+      },
+    });
+
+    // Get the paginated reviewer attempts data
+    const reviewerAttempts = await prisma.reviewerAttempt.findMany({
+      where: {
+        reviewerId,
+        ...(search && {
+          user: {
+            OR: [
+              { schoolId: { contains: search, mode: "insensitive" } },
+              { firstName: { contains: search, mode: "insensitive" } },
+              { lastName: { contains: search, mode: "insensitive" } },
+            ],
+          },
+        }),
+      },
+      skip,
+      take: limit,
+      include: {
+        user: true,
+      },
+    });
+
+    return { reviewerAttempts, totalCount }; // Return both reviewerAttempts and totalCount
+  } catch (error) {
+    console.error("Error fetching reviewer attempts:", error);
+    return { reviewerAttempts: [], totalCount: 0 };
   }
 }

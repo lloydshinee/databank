@@ -114,6 +114,7 @@ model ReviewerAttemptScope {
 model ReviewerAttemptQuestion {
   id         String          @id @default(cuid())
   questionId String
+  number     Int
   attemptId  String
   userAnswer String?
   attempt    ReviewerAttempt @relation(fields: [attemptId], references: [id])
