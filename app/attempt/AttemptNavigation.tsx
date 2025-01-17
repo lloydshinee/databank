@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { useAttempt } from "@/providers/AttemptProvider";
 import { CheckCheckIcon, X } from "lucide-react";
 import { AttemptTimer } from "./AttemptTimer";
+import { FinishButton } from "./FinishButton";
 
 export function AttemptNavigation() {
   const { filteredQuestions } = useAttempt();
@@ -33,7 +33,7 @@ export function AttemptNavigation() {
           </div>
         ))}
       </div>
-      <Button className="my-10">Finish Attempt</Button>
+      <FinishButton />
       <AttemptTimer />
     </section>
   );

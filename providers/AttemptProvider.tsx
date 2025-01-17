@@ -1,9 +1,14 @@
 "use client";
 
-import { updateAttemptQuestionAnswer } from "@/actions/attemptQuestion.action";
+import {
+  checkAttemptAnswers,
+  updateAttemptQuestionAnswer,
+} from "@/actions/attemptQuestion.action";
 import { getReviewerAttempt } from "@/actions/reviewerAttempt.action";
 import Loading from "@/app/(dashboard)/loading";
 import { ReviewerAttempt, ReviewerAttemptQuestion } from "@/lib/globals";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import {
   createContext,
   ReactNode,
@@ -19,6 +24,7 @@ interface AttemptContextType {
   fetchAttempt: (attemptId: string) => Promise<void>;
   changeScope: (topicId: string, subtopicId: string | null) => void;
   updateAnswer: (questionId: string, userAnswer: string) => void;
+  finishAttempt: () => void;
   filteredQuestions: ReviewerAttemptQuestion[];
 }
 
@@ -33,6 +39,9 @@ export const AttemptProvider: React.FC<AttemptProviderProps> = ({
   children,
   attemptId,
 }) => {
+  const { data: session } = useSession();
+  const router = useRouter();
+
   const [attempt, setAttempt] = useState<ReviewerAttempt | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -74,6 +83,23 @@ export const AttemptProvider: React.FC<AttemptProviderProps> = ({
     setAttempt({ ...attempt, questions: updatedQuestions });
   };
 
+  const finishAttempt = async () => {
+    if (attempt?.status == "Ongoing") {
+      await checkAttemptAnswers(attempt.id);
+      window.location.reload();
+    } else {
+      if (session?.user.role == "Student") {
+        router.push("/student/reviewer");
+      } else {
+        router.push(
+          `/${session?.user.role.toLowerCase()}/reviewers/${
+            attempt?.reviewerId
+          }`
+        );
+      }
+    }
+  };
+
   const filteredQuestions =
     attempt?.questions?.filter((q) => {
       const scopeMatch = attempt.scopes?.some(
@@ -101,6 +127,7 @@ export const AttemptProvider: React.FC<AttemptProviderProps> = ({
     fetchAttempt,
     changeScope,
     updateAnswer,
+    finishAttempt,
     filteredQuestions,
   };
 

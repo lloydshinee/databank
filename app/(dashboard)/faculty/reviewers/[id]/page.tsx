@@ -1,4 +1,5 @@
 import { getReviewer } from "@/actions/reviewer.action";
+import AttemptsTable from "@/app/(dashboard)/admin/reviewers/[id]/AttemptsTable";
 import Questions from "@/app/(dashboard)/admin/reviewers/[id]/Questions";
 import { Topics } from "@/app/(dashboard)/admin/reviewers/[id]/Topics";
 import { FormModal } from "@/components/FormModal";
@@ -25,6 +26,10 @@ export default async function ReviewerPage({
       </FormModal>
       <Topics reviewer={reviewer} />
       <Questions reviewerId={reviewer.id} />
+      <section>
+        <h1 className="font-bold mb-4">Attempts</h1>
+        <AttemptsTable reviewerId={reviewer.id} />
+      </section>
     </main>
   );
 }

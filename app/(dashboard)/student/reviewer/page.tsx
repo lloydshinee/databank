@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import ReviewerBanner from "@/components/ReviewerBanner";
 import { Topics } from "./Topics";
 import { Attempt } from "./Attempt";
+import { Attempts } from "./Attempts";
 
 export default async function ReviewerPage() {
   const session = await auth();
@@ -21,6 +22,7 @@ export default async function ReviewerPage() {
       <ReviewerBanner reviewer={reviewer} />
       <Topics reviewerId={reviewer.id} />
       <Attempt reviewerId={reviewer.id} />
+      <Attempts reviewerId={reviewer.id} studentId={user.schoolId as string} />
     </main>
   );
 }

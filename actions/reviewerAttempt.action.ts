@@ -2,6 +2,7 @@
 
 import { ReviewerAttemptFormData } from "@/components/forms/ReviewerAttemptForm";
 import prisma from "@/lib/prisma";
+import { checkAttemptAnswers } from "./attemptQuestion.action";
 
 export async function createReviewerAttempt(data: ReviewerAttemptFormData) {
   try {
@@ -131,10 +132,8 @@ export async function getOngoingAttempt(userId: string) {
     const now = new Date();
     if (new Date(attempt.expiresAt) <= now) {
       // If expired, update the status to "Expired"
-      await prisma.reviewerAttempt.update({
-        where: { id: attempt.id },
-        data: { status: "Expired" },
-      });
+      await checkAttemptAnswers(attempt.id);
+
       return null; // Return null for expired attempts
     }
     // If not expired, return the attempt
@@ -200,5 +199,14 @@ export async function getReviewerAttempts({
   } catch (error) {
     console.error("Error fetching reviewer attempts:", error);
     return { reviewerAttempts: [], totalCount: 0 };
+  }
+}
+
+export async function getUserReviewerAttempts(userId: string) {
+  try {
+    return await prisma.reviewerAttempt.findMany({ where: { userId } });
+  } catch (error) {
+    console.log(error);
+    return [];
   }
 }

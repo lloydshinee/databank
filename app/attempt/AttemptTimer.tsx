@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { useAttempt } from "@/providers/AttemptProvider";
 
 export function AttemptTimer() {
-  const { attempt } = useAttempt();
+  const { attempt, finishAttempt } = useAttempt();
   const expiresAt = attempt?.expiresAt ? new Date(attempt.expiresAt) : null;
 
   const [timeRemaining, setTimeRemaining] = useState<string>("");
 
   useEffect(() => {
-    if (!expiresAt) return;
+    if (!expiresAt || attempt?.status === "Expired") return;
 
     const updateTimer = () => {
       const now = new Date();
@@ -16,6 +16,7 @@ export function AttemptTimer() {
 
       if (difference <= 0) {
         setTimeRemaining("Time's up!");
+        finishAttempt();
         return;
       }
 
@@ -32,9 +33,8 @@ export function AttemptTimer() {
     // Update the timer every second
     updateTimer(); // Call once immediately to avoid delay
     const interval = setInterval(updateTimer, 1000);
-
     return () => clearInterval(interval); // Cleanup the interval on unmount
-  }, [expiresAt]);
+  }, [expiresAt, attempt?.status]);
 
   if (!expiresAt) {
     return <div>No timer available.</div>;

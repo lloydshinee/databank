@@ -3,7 +3,7 @@ import { getTopics } from "@/actions/topic.action";
 export async function Topics({ reviewerId }: { reviewerId: string }) {
   const topics = await getTopics(reviewerId); // Fetch topics based on reviewer ID
   return (
-    <div className="p-4 bg-gray-50 min-h-screen">
+    <div className="p-4 bg-gray-50">
       <h1 className="text-xl font-bold mb-3 text-gray-800">Topics</h1>
       <div className="space-y-4">
         {topics.length > 0 ? (
