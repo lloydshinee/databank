@@ -120,3 +120,7 @@ model ReviewerAttemptQuestion {
   attempt    ReviewerAttempt @relation(fields: [attemptId], references: [id])
   question   Question        @relation(fields: [questionId], references: [id])
 }
+
+model Log {
+  id String @id @default(cuid())
+}

@@ -65,7 +65,7 @@ export default function AttemptsTable({ reviewerId }: { reviewerId: string }) {
             <TableCell>Student</TableCell>
             <TableCell>Status</TableCell>
             <TableCell>Score</TableCell>
-            <TableCell>Question Amount</TableCell>
+            <TableCell>Grade</TableCell>
             <TableCell>Time Limit</TableCell>
             <TableCell>Action</TableCell>
           </TableRow>
@@ -85,7 +85,21 @@ export default function AttemptsTable({ reviewerId }: { reviewerId: string }) {
                 </TableCell>
                 <TableCell>{attempt.status}</TableCell>
                 <TableCell>{attempt.score}</TableCell>
-                <TableCell>{attempt.questionAmount}</TableCell>
+                <TableCell>
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                      attempt.score >=
+                      (2 * (attempt.questions?.length as number)) / 2
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {attempt.score >=
+                    (2 * (attempt.questions?.length as number)) / 2
+                      ? "Passed"
+                      : "Failed"}
+                  </span>
+                </TableCell>
                 <TableCell>{attempt.timeLimit} min</TableCell>
                 <TableCell className="flex gap-4">
                   <Link href={`/attempt?attemptId=${attempt.id}`}>

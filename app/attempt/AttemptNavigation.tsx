@@ -4,10 +4,10 @@ import { AttemptTimer } from "./AttemptTimer";
 import { FinishButton } from "./FinishButton";
 
 export function AttemptNavigation() {
-  const { filteredQuestions } = useAttempt();
+  const { filteredQuestions, attempt } = useAttempt();
 
   return (
-    <section className="w-[10rem]">
+    <section className="w-[10rem] space-y-4">
       <h1 className="text-sm font-semibold text-primary mb-5">Navigation</h1>
       <div className="flex gap-2 flex-wrap">
         {filteredQuestions.map((q, i) => (
@@ -24,10 +24,14 @@ export function AttemptNavigation() {
                   : "bg-red-600"
               }`}
             >
-              {q.question.correctAnswer == q.userAnswer ? (
-                <CheckCheckIcon />
-              ) : (
-                <X />
+              {attempt?.status != "Ongoing" && (
+                <>
+                  {q.question.correctAnswer == q.userAnswer ? (
+                    <CheckCheckIcon />
+                  ) : (
+                    <X />
+                  )}
+                </>
               )}
             </div>
           </div>

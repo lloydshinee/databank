@@ -8,8 +8,8 @@ export function AttemptTimer() {
   const [timeRemaining, setTimeRemaining] = useState<string>("");
 
   useEffect(() => {
-    if (!expiresAt || attempt?.status === "Expired") return;
-
+    if (attempt?.status !== "Ongoing") return;
+    if (!expiresAt) return;
     const updateTimer = () => {
       const now = new Date();
       const difference = expiresAt.getTime() - now.getTime();
@@ -36,9 +36,7 @@ export function AttemptTimer() {
     return () => clearInterval(interval); // Cleanup the interval on unmount
   }, [expiresAt, attempt?.status]);
 
-  if (!expiresAt) {
-    return <div>No timer available.</div>;
-  }
+  if (attempt?.status !== "Ongoing") return;
 
   return (
     <div className="text-lg font-semibold text-red-600">

@@ -192,6 +192,9 @@ export async function getReviewerAttempts({
       take: limit,
       include: {
         user: true,
+        questions: {
+          include: { question: { include: { choices: true } } },
+        },
       },
     });
 

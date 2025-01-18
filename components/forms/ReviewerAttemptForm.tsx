@@ -109,6 +109,7 @@ export function ReviewerAttemptForm({ reviewerId }: { reviewerId: string }) {
           <Input
             id="questionAmount"
             {...form.register("questionAmount", { valueAsNumber: true })}
+            className="w-24 p-2 text-sm"
           />
         </div>
 
@@ -118,6 +119,7 @@ export function ReviewerAttemptForm({ reviewerId }: { reviewerId: string }) {
             type="number"
             id="timeLimit"
             {...form.register("timeLimit", { valueAsNumber: true })}
+            className="w-24 p-2 text-sm"
           />
         </div>
 
@@ -129,8 +131,10 @@ export function ReviewerAttemptForm({ reviewerId }: { reviewerId: string }) {
             return (
               <div key={topic.id} className="mb-4">
                 <div
-                  className={`cursor-pointer p-2 border ${
-                    isTopicSelected ? "bg-blue-200" : "bg-gray-100"
+                  className={`cursor-pointer p-3 border-2 rounded-lg transition-all duration-300 ${
+                    isTopicSelected
+                      ? "bg-blue-100 border-blue-600"
+                      : "bg-gray-100 border-gray-300 hover:bg-blue-50"
                   }`}
                   onClick={() => {
                     if (topic.subtopics.length === 0) {
@@ -138,10 +142,11 @@ export function ReviewerAttemptForm({ reviewerId }: { reviewerId: string }) {
                     }
                   }}
                 >
-                  <span>{topic.title}</span>
+                  <span className="font-semibold text-sm">{topic.title}</span>
                 </div>
+
                 {topic.subtopics.length > 0 && (
-                  <div className="ml-4">
+                  <div className="ml-4 mt-2">
                     <Label>Subtopics</Label>
                     {topic.subtopics.map((subtopic) => {
                       const isSubtopicSelected = scope.some(
@@ -151,17 +156,16 @@ export function ReviewerAttemptForm({ reviewerId }: { reviewerId: string }) {
                       return (
                         <div
                           key={subtopic.id}
-                          className="cursor-pointer p-2 border"
+                          className={`cursor-pointer p-3 border-2 rounded-lg transition-all duration-300 mb-2 ${
+                            isSubtopicSelected
+                              ? "bg-blue-100 border-blue-600"
+                              : "bg-gray-100 border-gray-300 hover:bg-blue-50"
+                          }`}
                           onClick={() =>
                             handleSubtopicSelection(topic.id, subtopic.id)
                           }
                         >
-                          <input
-                            type="checkbox"
-                            checked={isSubtopicSelected}
-                            readOnly
-                          />
-                          <span>{subtopic.title}</span>
+                          <span className="text-sm">{subtopic.title}</span>
                         </div>
                       );
                     })}
@@ -171,8 +175,9 @@ export function ReviewerAttemptForm({ reviewerId }: { reviewerId: string }) {
             );
           })}
         </div>
-
-        <Button type="submit">Submit</Button>
+        <Button type="submit" className="px-4 py-2 text-sm">
+          Submit
+        </Button>
       </form>
     </FormProvider>
   );
