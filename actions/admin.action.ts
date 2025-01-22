@@ -8,7 +8,7 @@ export async function createAdmin(data: AdminFormData) {
   try {
     await prisma.user.create({
       data: {
-        role: "ADMIN",
+        role: "Admin",
         email: data.email,
         password: data.password,
         firstName: data.firstName,
