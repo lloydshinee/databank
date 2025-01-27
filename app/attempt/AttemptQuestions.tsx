@@ -1,14 +1,10 @@
 import { useAttempt } from "@/providers/AttemptProvider";
 import { AttemptNavigation } from "./AttemptNavigation";
+import React from "react";
+import ItemCard from "./ItemCard";
 
 export function AttemptQuestions() {
-  const { filteredQuestions, updateAnswer, attempt } = useAttempt();
-
-  const handleAnswerChange = async (questionId: string, userAnswer: string) => {
-    if (attempt?.status === "Ongoing") {
-      updateAnswer(questionId, userAnswer);
-    }
-  };
+  const { filteredQuestions, attempt } = useAttempt();
 
   return (
     <section className="p-10 gap-10 flex flex-wrap">
@@ -29,11 +25,13 @@ export function AttemptQuestions() {
                   <span>{i + 1}.</span>
                   <p>{q.question.content}</p>
                 </div>
-                <div className="mt-2">
+
+                {/*KINI */}
+                <div className="mt-2 ">
                   {q.question.choices.map((choice) => (
                     <div key={choice.id} className="mb-2">
                       <span className="mr-4 opacity-50">{choice.index}</span>
-                      <input
+                      {/* <input
                         type="radio"
                         id={`choice-${choice.id}`}
                         name={`question-${q.id}`}
@@ -41,13 +39,14 @@ export function AttemptQuestions() {
                         checked={q.userAnswer === choice.index}
                         disabled={attempt?.status !== "Ongoing"} // Disable input if not "Ongoing"
                         onChange={() => handleAnswerChange(q.id, choice.index)}
-                      />
-                      <label htmlFor={`choice-${choice.id}`} className="ml-2">
-                        {choice.content}
-                      </label>
+                      /> */}
+                      <span className="ml-2">{choice.content}</span>
                     </div>
                   ))}
+                  <ItemCard q={q} />
                 </div>
+                {/*KINI */}
+
                 {/* Show feedback and correct answer when status is not "Ongoing" */}
                 {attempt?.status !== "Ongoing" && (
                   <div className="mt-2">

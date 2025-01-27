@@ -23,7 +23,7 @@ interface AttemptContextType {
   loading: boolean;
   fetchAttempt: (attemptId: string) => Promise<void>;
   changeScope: (topicId: string, subtopicId: string | null) => void;
-  updateAnswer: (questionId: string, userAnswer: string) => void;
+  updateAnswer: (questionId: string, userAnswer: string | null) => void;
   finishAttempt: () => void;
   filteredQuestions: ReviewerAttemptQuestion[];
 }
