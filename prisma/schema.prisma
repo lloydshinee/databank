@@ -11,18 +11,20 @@ datasource db {
 }
 
 model User {
-  id            String            @id @default(uuid())
-  email         String            @unique
-  contactNumber String?
-  password      String
-  role          String
-  firstName     String?
-  lastName      String?
-  college       String?
-  program       String?
-  yearLevel     Int?
-  schoolId      String?
-  attempts      ReviewerAttempt[]
+  id                  String                @id @default(uuid())
+  email               String                @unique
+  contactNumber       String?
+  password            String
+  role                String
+  firstName           String?
+  lastName            String?
+  college             String?
+  program             String?
+  yearLevel           Int?
+  schoolId            String?
+  attempts            ReviewerAttempt[]
+  ReviewerEditRequest ReviewerEditRequest[]
+  Notification        Notification[]
 }
 
 model Reviewer {
@@ -73,6 +75,7 @@ model Question {
   reviewer                Reviewer                  @relation(fields: [reviewerId], references: [id])
   choices                 QuestionChoices[]
   ReviewerAttemptQuestion ReviewerAttemptQuestion[]
+  ReviewerEditRequest     ReviewerEditRequest[]
 }
 
 model QuestionChoices {
@@ -123,4 +126,26 @@ model ReviewerAttemptQuestion {
 
 model Log {
   id String @id @default(cuid())
+}
+
+model Notification {
+  id           String   @id @default(cuid())
+  message      String
+  link         String
+  isRead       Boolean  @default(false)
+  dateNotified DateTime @default(now())
+  toId         String
+
+  User User @relation(fields: [toId], references: [id])
+}
+
+model ReviewerEditRequest {
+  id            String   @id @default(cuid())
+  questionId    String
+  userId        String
+  status        String
+  dateRequested DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id])
+  question Question @relation(fields: [questionId], references: [id])
 }

@@ -17,6 +17,8 @@ import { AssignTopic } from "./AssignTopic";
 import { Question } from "@/lib/globals";
 import QuestionLock from "./QuestionLock";
 import QuestionsForm from "@/components/forms/QuestionsForm";
+import { EditRequest } from "@/app/(dashboard)/faculty/reviewers/[id]/EditRequestButton";
+import QuestionHover from "@/app/(dashboard)/faculty/reviewers/[id]/QuestionHover";
 
 export default function QuestionsTable({ reviewerId }: { reviewerId: string }) {
   const [questions, setQuestions] = useState<any[]>([]);
@@ -91,7 +93,9 @@ export default function QuestionsTable({ reviewerId }: { reviewerId: string }) {
           ) : questions.length > 0 ? (
             questions.map((question: Question) => (
               <TableRow key={question.id}>
-                <TableCell>{question.content}</TableCell>
+                <TableCell>
+                  <QuestionHover question={question} />
+                </TableCell>
                 <TableCell>{question.correctAnswer}</TableCell>
                 <TableCell>{question.points}</TableCell>
                 <TableCell>
@@ -106,14 +110,17 @@ export default function QuestionsTable({ reviewerId }: { reviewerId: string }) {
                   />
                 </TableCell>
                 <TableCell className="flex gap-4">
-                  {question.status == "Unlocked" && (
+                  {question.status == "Unlocked" ? (
                     <FormModal title="Edit Question">
                       <QuestionForm reviewerId={reviewerId} data={question} />
                     </FormModal>
+                  ) : (
+                    <EditRequest questionId={question.id} />
                   )}
                   <QuestionLock
                     questionId={question.id}
                     status={question.status}
+                    revalidate={fetchQuestions}
                   />
                 </TableCell>
               </TableRow>

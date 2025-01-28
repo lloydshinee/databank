@@ -190,6 +190,9 @@ export async function getReviewerAttempts({
       },
       skip,
       take: limit,
+      orderBy: {
+        dateCreated: "desc",
+      },
       include: {
         user: true,
         questions: {
@@ -207,7 +210,12 @@ export async function getReviewerAttempts({
 
 export async function getUserReviewerAttempts(userId: string) {
   try {
-    return await prisma.reviewerAttempt.findMany({ where: { userId } });
+    return await prisma.reviewerAttempt.findMany({
+      where: { userId },
+      orderBy: {
+        dateCreated: "desc",
+      },
+    });
   } catch (error) {
     console.log(error);
     return [];

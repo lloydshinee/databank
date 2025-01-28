@@ -8,11 +8,13 @@ import { updateQuestionStatus } from "@/actions/question.action";
 interface QuestionLockProps {
   questionId: string;
   status: string;
+  revalidate: () => void;
 }
 
 export default function QuestionLock({
   questionId,
   status,
+  revalidate,
 }: QuestionLockProps) {
   const [lockStatus, setLockStatus] = useState<string>(status);
   const { data: session } = useSession();
@@ -28,6 +30,7 @@ export default function QuestionLock({
       // Example API call (replace with your actual implementation)
       await updateQuestionStatus(questionId, newStatus);
       console.log(`Question ${questionId} status updated to: ${newStatus}`);
+      revalidate();
     } catch (error) {
       console.error("Failed to update lock status:", error);
     }

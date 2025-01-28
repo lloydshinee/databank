@@ -2,6 +2,7 @@
 
 import { SubtopicFormData } from "@/components/forms/SubtopicForm";
 import prisma from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function upsertSubtopic(data: SubtopicFormData) {
   try {
@@ -21,6 +22,7 @@ export async function upsertSubtopic(data: SubtopicFormData) {
         topicId: data.topicId,
       },
     });
+    revalidatePath("/");
   } catch (error) {
     console.error("Failed to upsert subtopic:", error);
   }

@@ -6,6 +6,7 @@ import { FormModal } from "@/components/FormModal";
 import { TopicForm } from "@/components/forms/TopicForm";
 import Header from "@/components/Header";
 import ReviewerBanner from "@/components/ReviewerBanner";
+import EditRequestsTable from "./EditRequestsTable";
 
 export default async function ReviewerPage({
   params,
@@ -29,6 +30,10 @@ export default async function ReviewerPage({
       <section>
         <h1 className="font-bold mb-4">Attempts</h1>
         <AttemptsTable reviewerId={reviewer.id} />
+      </section>
+      <section>
+        <h1 className="font-bold mb-4">Edit Requests</h1>
+        <EditRequestsTable reviewerId={reviewer.id} />
       </section>
     </main>
   );

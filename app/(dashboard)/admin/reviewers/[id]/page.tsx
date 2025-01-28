@@ -6,6 +6,7 @@ import { Topics } from "./Topics";
 import Questions from "./Questions";
 import ReviewerBanner from "@/components/ReviewerBanner";
 import { Attempts } from "./Attempts";
+import EditRequestsTable from "@/app/(dashboard)/faculty/reviewers/[id]/EditRequestsTable";
 
 export default async function ReviewerPage({
   params,
@@ -27,6 +28,10 @@ export default async function ReviewerPage({
       <Topics reviewer={reviewer} />
       <Questions reviewerId={reviewer.id} />
       <Attempts reviewerId={reviewer.id} />
+      <section>
+        <h1 className="font-bold mb-4">Edit Requests</h1>
+        <EditRequestsTable reviewerId={reviewer.id} />
+      </section>
     </main>
   );
 }

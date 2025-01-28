@@ -43,7 +43,7 @@ export function AttemptQuestions() {
                       <span className="ml-2">{choice.content}</span>
                     </div>
                   ))}
-                  <ItemCard q={q} />
+                  {attempt?.status == "Ongoing" && <ItemCard q={q} />}
                 </div>
                 {/*KINI */}
 
