@@ -118,6 +118,7 @@ export default function QuestionsTable({ reviewerId }: { reviewerId: string }) {
                     <EditRequest questionId={question.id} />
                   )}
                   <QuestionLock
+                    reviewerId={reviewerId}
                     questionId={question.id}
                     status={question.status}
                     revalidate={fetchQuestions}

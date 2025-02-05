@@ -15,3 +15,50 @@ export async function createReviewerLog(reviewerId: string, action: string) {
     console.log(error);
   }
 }
+
+export async function getLogs({
+  reviewerId,
+  search,
+  page = 1,
+  limit = 10,
+}: {
+  reviewerId: string;
+  search?: string;
+  page?: number;
+  limit?: number;
+}) {
+  try {
+    const skip = (page - 1) * limit;
+
+    // Get the total count of matching logs
+    const totalCount = await prisma.reviewerLog.count({
+      where: {
+        reviewerId,
+        ...(search && {
+          OR: [{ action: { contains: search, mode: "insensitive" } }],
+        }),
+      },
+    });
+
+    // Get the paginated logs data
+    const logs = await prisma.reviewerLog.findMany({
+      where: {
+        reviewerId,
+        ...(search && {
+          OR: [{ action: { contains: search, mode: "insensitive" } }],
+        }),
+      },
+      skip,
+      take: limit,
+      include: {
+        reviewer: true, // Include reviewer details
+        user: true, // Include user details
+      },
+    });
+
+    return { logs, totalCount }; // Return both logs and totalCount
+  } catch (error) {
+    console.error("Error fetching logs:", error);
+    return { logs: [], totalCount: 0 };
+  }
+}

@@ -35,7 +35,7 @@ export default async function ReviewerPage({
       </section>
       <section>
         <h1 className="font-bold mb-4">Logs</h1>
-        <LogsTable />
+        <LogsTable reviewerId={reviewer.id} />
       </section>
     </main>
   );

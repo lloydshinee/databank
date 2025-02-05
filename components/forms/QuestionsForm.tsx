@@ -10,6 +10,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { toast } from "@/hooks/use-toast";
 import { createQuestions } from "@/actions/question.action";
+import { createReviewerLog } from "@/actions/log.action";
 
 const questionSchema = z.object({
   id: z.string().optional(),
@@ -113,6 +114,7 @@ export default function QuestionsForm({ reviewerId }: { reviewerId: string }) {
       title: "Success",
       description: "Questions submitted successfully",
     });
+    createReviewerLog(reviewerId, `Created question(s)`);
   };
 
   return (

@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { upsertTopic } from "@/actions/topic.action";
 import { Topic } from "@/lib/globals";
+import { createReviewerLog } from "@/actions/log.action";
 
 const reviewerFormSchema = z.object({
   id: z.string().optional(),
@@ -44,6 +45,7 @@ export function TopicForm({
 
   const onSubmit = async (data: TopicFormData) => {
     await upsertTopic(data);
+    createReviewerLog(reviewerId, `Upserted a topic`);
     console.log("Form Data:", data);
   };
 

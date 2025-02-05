@@ -4,14 +4,17 @@ import React, { useState } from "react";
 import { Lock, Unlock } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { updateQuestionStatus } from "@/actions/question.action";
+import { createReviewerLog } from "@/actions/log.action";
 
 interface QuestionLockProps {
+  reviewerId: string;
   questionId: string;
   status: string;
   revalidate: () => void;
 }
 
 export default function QuestionLock({
+  reviewerId,
   questionId,
   status,
   revalidate,
@@ -29,6 +32,7 @@ export default function QuestionLock({
 
       // Example API call (replace with your actual implementation)
       await updateQuestionStatus(questionId, newStatus);
+      createReviewerLog(reviewerId, `${newStatus} a question`);
       console.log(`Question ${questionId} status updated to: ${newStatus}`);
       revalidate();
     } catch (error) {

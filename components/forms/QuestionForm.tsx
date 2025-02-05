@@ -14,6 +14,7 @@ import {
 } from "../ui/form";
 import { Question } from "@/lib/globals";
 import { upsertQuestion } from "@/actions/question.action";
+import { createReviewerLog } from "@/actions/log.action";
 
 export const questionSchema = z.object({
   id: z.string().optional(),
@@ -64,6 +65,7 @@ export default function QuestionForm({
   const handleSubmit = async (data: QuestionFormData) => {
     console.log("Submitted Data:", data);
     await upsertQuestion(data);
+    createReviewerLog(reviewerId, `Upserted a question`);
     toast({
       title: "Success",
       description: "Question submitted successfully",
