@@ -25,6 +25,7 @@ model User {
   attempts            ReviewerAttempt[]
   ReviewerEditRequest ReviewerEditRequest[]
   Notification        Notification[]
+  ReviewerLog         ReviewerLog[]
 }
 
 model Reviewer {
@@ -38,6 +39,7 @@ model Reviewer {
   topics      Topic[]
   questions   Question[]
   attempts    ReviewerAttempt[]
+  ReviewerLog ReviewerLog[]
 }
 
 model Topic {
@@ -124,8 +126,15 @@ model ReviewerAttemptQuestion {
   question   Question        @relation(fields: [questionId], references: [id])
 }
 
-model Log {
-  id String @id @default(cuid())
+model ReviewerLog {
+  id          String   @id @default(cuid())
+  reviewerId  String
+  userId      String
+  action      String
+  dateCreated DateTime @default(now())
+
+  reviewer Reviewer @relation(fields: [reviewerId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
 }
 
 model Notification {

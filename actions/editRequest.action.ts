@@ -59,7 +59,7 @@ export async function getEditRequests({
         question: {
           reviewerId,
         },
-        status: { in: ["Pending", "Approved"] }, // Filter only Pending and Approved
+        status: { in: ["Pending"] }, // Filter only Pending and Approved
         ...(search && {
           OR: [
             {
@@ -77,7 +77,7 @@ export async function getEditRequests({
         question: {
           reviewerId,
         },
-        status: { in: ["Pending", "Approved"] }, // Filter only Pending and Approved
+        status: { in: ["Pending"] }, // Filter only Pending and Approved
         ...(search && {
           OR: [
             {
