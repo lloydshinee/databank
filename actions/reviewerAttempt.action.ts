@@ -198,6 +198,12 @@ export async function getReviewerAttempts({
         questions: {
           include: { question: { include: { choices: true } } },
         },
+        scopes : {
+          include: {
+            topic: true,
+            subtopic: true
+          }
+        }
       },
     });
 

@@ -7,7 +7,7 @@ export function AttemptScore() {
   const totalPossibleScore = 2 * (attempt?.questions?.length || 0); // Assuming each question is worth 2 points
   const isPassed = (score as number) >= totalPossibleScore / 2;
 
-  if (attempt?.status == "Ongoing") return;
+  if (attempt?.status === "Ongoing") return;
 
   return (
     <div className="p-4">

@@ -13,7 +13,7 @@ import { getReviewerAttempts } from "@/actions/reviewerAttempt.action"; // Fetch
 import { ReviewerAttempt } from "@/lib/globals"; // Assuming type for ReviewerAttempt
 import Link from "next/link";
 import { DownloadResultModal } from "@/components/DownloadResult";
-import DownloadResult from "./ResultPDFViewer";
+import {DownloadResult} from "./ResultPDFViewer";
 
 export default function AttemptsTable({
   reviewerId,
