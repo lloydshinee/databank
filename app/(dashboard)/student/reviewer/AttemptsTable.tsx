@@ -12,6 +12,8 @@ import {
 import { getReviewerAttempts } from "@/actions/reviewerAttempt.action"; // Fetch reviewer attempts
 import { ReviewerAttempt } from "@/lib/globals"; // Assuming type for ReviewerAttempt
 import Link from "next/link";
+import { DownloadResultModal } from "@/components/DownloadResult";
+import DownloadResult from "./ResultPDFViewer";
 
 export default function AttemptsTable({
   reviewerId,
@@ -56,7 +58,8 @@ export default function AttemptsTable({
             <TableCell>Score</TableCell>
             <TableCell>Grade</TableCell>
             <TableCell>Time Limit</TableCell>
-            <TableCell>Action</TableCell>
+            
+            <TableCell className="text-end pr-10">Action</TableCell>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -90,10 +93,14 @@ export default function AttemptsTable({
                   </span>
                 </TableCell>
                 <TableCell>{attempt.timeLimit} min</TableCell>
-                <TableCell className="flex gap-4">
+               
+                <TableCell className="flex justify-end gap-4">
                   <Link href={`/attempt?attemptId=${attempt.id}`}>
                     <Button variant="link">View</Button>
                   </Link>
+                  <DownloadResultModal title={"Download Result"}>
+                    {<DownloadResult attempt={attempt} />}
+                  </DownloadResultModal>
                 </TableCell>
               </TableRow>
             ))
