@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { ReviewerAttempt } from "./ReviewerAttempt";
 import Header from "@/components/Header";
+import { TabVisibilityProvider } from "@/context/TabVisibilityContext";
 
 export default function AttemptPage() {
   return (
@@ -9,7 +10,9 @@ export default function AttemptPage() {
         <Header title="Reviewer Attempt" />
       </section>
       <Suspense fallback={<>Loading</>}>
-        <ReviewerAttempt />
+        <TabVisibilityProvider>
+          <ReviewerAttempt />
+        </TabVisibilityProvider>
       </Suspense>
     </main>
   );
