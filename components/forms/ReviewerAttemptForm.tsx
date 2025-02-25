@@ -103,7 +103,7 @@ export function ReviewerAttemptForm({ reviewerId }: { reviewerId: string }) {
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-h-[85vh] overflow-auto">
         <div>
           <Label htmlFor="questionAmount">Question Amount</Label>
           <Input
