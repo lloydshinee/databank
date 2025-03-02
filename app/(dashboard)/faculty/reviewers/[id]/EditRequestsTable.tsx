@@ -13,6 +13,7 @@ import { getEditRequests } from "@/actions/editRequest.action"; // Assuming you 
 import QuestionHover from "./QuestionHover";
 import CancelRequestButton from "./CancelRequestButton";
 import { ApproveRequest } from "@/app/(dashboard)/admin/reviewers/[id]/ApproveRequestButton";
+import EditButton from "./EditButton";
 
 export default function EditRequestsTable({
   reviewerId,
@@ -87,7 +88,10 @@ export default function EditRequestsTable({
                       />
                     </>
                   ) : (
-                    <p className="text-black/70">Will Auto-Lock in 5 days.</p>
+                    <>
+                      <p className="text-black/70">Will Auto-Lock in 5 days.</p>
+                      <EditButton question={request.question} />
+                    </>
                   )}
                 </TableCell>
               </TableRow>

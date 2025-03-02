@@ -103,7 +103,10 @@ export function ReviewerAttemptForm({ reviewerId }: { reviewerId: string }) {
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-h-[85vh] overflow-auto">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4 max-h-[85vh] overflow-auto"
+      >
         <div>
           <Label htmlFor="questionAmount">Question Amount</Label>
           <Input
@@ -125,56 +128,60 @@ export function ReviewerAttemptForm({ reviewerId }: { reviewerId: string }) {
 
         <div>
           <Label>Topics</Label>
-          {availableTopics.map((topic) => {
-            const isTopicSelected = scope.some((s) => s.topicId === topic.id);
+          <div className="max-h-64 overflow-y-auto border p-2 rounded-lg bg-white">
+            {availableTopics.map((topic) => {
+              const isTopicSelected = scope.some((s) => s.topicId === topic.id);
 
-            return (
-              <div key={topic.id} className="mb-4">
-                <div
-                  className={`cursor-pointer p-3 border-2 rounded-lg transition-all duration-300 ${
-                    isTopicSelected
-                      ? "bg-blue-100 border-blue-600"
-                      : "bg-gray-100 border-gray-300 hover:bg-blue-50"
-                  }`}
-                  onClick={() => {
-                    if (topic.subtopics.length === 0) {
-                      handleTopicSelection(topic.id);
-                    }
-                  }}
-                >
-                  <span className="font-semibold text-sm">{topic.title}</span>
-                </div>
-
-                {topic.subtopics.length > 0 && (
-                  <div className="ml-4 mt-2">
-                    <Label>Subtopics</Label>
-                    {topic.subtopics.map((subtopic) => {
-                      const isSubtopicSelected = scope.some(
-                        (s) =>
-                          s.topicId === topic.id && s.subtopicId === subtopic.id
-                      );
-                      return (
-                        <div
-                          key={subtopic.id}
-                          className={`cursor-pointer p-3 border-2 rounded-lg transition-all duration-300 mb-2 ${
-                            isSubtopicSelected
-                              ? "bg-blue-100 border-blue-600"
-                              : "bg-gray-100 border-gray-300 hover:bg-blue-50"
-                          }`}
-                          onClick={() =>
-                            handleSubtopicSelection(topic.id, subtopic.id)
-                          }
-                        >
-                          <span className="text-sm">{subtopic.title}</span>
-                        </div>
-                      );
-                    })}
+              return (
+                <div key={topic.id} className="mb-4">
+                  <div
+                    className={`cursor-pointer p-3 border-2 rounded-lg transition-all duration-300 ${
+                      isTopicSelected
+                        ? "bg-blue-100 border-blue-600"
+                        : "bg-gray-100 border-gray-300 hover:bg-blue-50"
+                    }`}
+                    onClick={() => {
+                      if (topic.subtopics.length === 0) {
+                        handleTopicSelection(topic.id);
+                      }
+                    }}
+                  >
+                    <span className="font-semibold text-sm">{topic.title}</span>
                   </div>
-                )}
-              </div>
-            );
-          })}
+
+                  {topic.subtopics.length > 0 && (
+                    <div className="ml-4 mt-2">
+                      <Label>Subtopics</Label>
+                      {topic.subtopics.map((subtopic) => {
+                        const isSubtopicSelected = scope.some(
+                          (s) =>
+                            s.topicId === topic.id &&
+                            s.subtopicId === subtopic.id
+                        );
+                        return (
+                          <div
+                            key={subtopic.id}
+                            className={`cursor-pointer p-3 border-2 rounded-lg transition-all duration-300 mb-2 ${
+                              isSubtopicSelected
+                                ? "bg-blue-100 border-blue-600"
+                                : "bg-gray-100 border-gray-300 hover:bg-blue-50"
+                            }`}
+                            onClick={() =>
+                              handleSubtopicSelection(topic.id, subtopic.id)
+                            }
+                          >
+                            <span className="text-sm">{subtopic.title}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
+
         <Button type="submit" className="px-4 py-2 text-sm">
           Submit
         </Button>
