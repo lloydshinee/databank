@@ -1,6 +1,7 @@
 "use client";
 
 import { createEditRequest } from "@/actions/editRequest.action";
+import { notifyAdmin } from "@/actions/notifications";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,7 +18,13 @@ import { useToast } from "@/hooks/use-toast";
 
 import { useSession } from "next-auth/react";
 
-export function EditRequest({ questionId }: { questionId: string }) {
+export function EditRequest({
+  questionId,
+  reviewerId,
+}: {
+  questionId: string;
+  reviewerId: string;
+}) {
   const { data: session } = useSession();
   const { toast } = useToast();
 
@@ -25,6 +32,10 @@ export function EditRequest({ questionId }: { questionId: string }) {
 
   const handleRequest = async () => {
     const res = await createEditRequest(questionId, session.user.id as string);
+    await notifyAdmin(
+      `A faculty member from College of ${session.user.college} has requested to edit a question. Please review the request.`,
+      `/admin/reviewers/${reviewerId}`
+    );
     toast({
       title: "Edit Request",
       description: res.message,

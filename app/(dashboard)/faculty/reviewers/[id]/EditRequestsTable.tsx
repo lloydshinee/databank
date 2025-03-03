@@ -84,13 +84,18 @@ export default function EditRequestsTable({
                       />
                       <ApproveRequest
                         requestId={request.id}
+                        userId={request.user.id}
+                        reviewerId={reviewerId}
                         revalidate={fetchEditRequests}
                       />
                     </>
                   ) : (
                     <>
                       <p className="text-black/70">Will Auto-Lock in 5 days.</p>
-                      <EditButton question={request.question} />
+                      <EditButton
+                        question={request.question}
+                        requestId={request.id}
+                      />
                     </>
                   )}
                 </TableCell>

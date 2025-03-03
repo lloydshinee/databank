@@ -115,7 +115,10 @@ export default function QuestionsTable({ reviewerId }: { reviewerId: string }) {
                       <QuestionForm reviewerId={reviewerId} data={question} />
                     </FormModal>
                   ) : (
-                    <EditRequest questionId={question.id} />
+                    <EditRequest
+                      questionId={question.id}
+                      reviewerId={question.reviewerId}
+                    />
                   )}
                   <QuestionLock
                     reviewerId={reviewerId}

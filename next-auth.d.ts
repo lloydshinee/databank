@@ -6,6 +6,7 @@ declare module "next-auth" {
     id: string; // Should be `string` instead of `int`
     email: string;
     role: string;
+    college: string?;
   }
 
   interface Session {

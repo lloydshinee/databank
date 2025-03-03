@@ -24,8 +24,8 @@ model User {
   schoolId            String?
   attempts            ReviewerAttempt[]
   ReviewerEditRequest ReviewerEditRequest[]
-  Notification        Notification[]
   ReviewerLog         ReviewerLog[]
+  Notification        Notification[]
 }
 
 model Reviewer {
@@ -138,14 +138,14 @@ model ReviewerLog {
 }
 
 model Notification {
-  id           String   @id @default(cuid())
-  message      String
-  link         String
-  isRead       Boolean  @default(false)
-  dateNotified DateTime @default(now())
-  toId         String
+  id        String   @id @default(cuid())
+  message   String
+  link      String
+  userId    String
+  viewed    Boolean  @default(false)
+  createdAt DateTime @default(now())
 
-  User User @relation(fields: [toId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 }
 
 model ReviewerEditRequest {

@@ -1,6 +1,7 @@
 "use client";
 
 import { updateRequestStatus } from "@/actions/editRequest.action";
+import { createNotification } from "@/actions/notifications";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,14 +15,17 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-
 import { useSession } from "next-auth/react";
 
 export function ApproveRequest({
   requestId,
+  userId,
+  reviewerId,
   revalidate,
 }: {
   requestId: string;
+  userId: string;
+  reviewerId: string;
   revalidate: () => void;
 }) {
   const { data: session } = useSession();
@@ -31,6 +35,11 @@ export function ApproveRequest({
 
   const handleApprove = async () => {
     await updateRequestStatus(requestId, "Approved");
+    await createNotification(
+      userId,
+      "Admin approved your request.",
+      `/faculty/reviewers/${reviewerId}`
+    );
     toast({
       title: "Approve Request",
       description: "Request approved successfully.",
