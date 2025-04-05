@@ -9,6 +9,7 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  
   const session = await auth();
 
   if (!session) {
@@ -17,11 +18,12 @@ export default async function DashboardLayout({
 
   return (
     <SessionProvider session={session}>
-      <main className="h-screen flex">
+      <main className="h-screen flex ">
         <SideBar user={session.user} />
-        <ScrollArea className="h-screen flex-1 p-10 w-full">
+        <ScrollArea className="h-screen flex-1 p-10 w-full ">
           {children}
         </ScrollArea>
+        
       </main>
     </SessionProvider>
   );

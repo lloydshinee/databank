@@ -9,6 +9,7 @@ export async function createQuestions(data: QuestionsFormData) {
     // Create questions with nested choices
     const questionData = data.questions.map((question) => ({
       content: String(question.content),
+      image: String(question.image),
       correctAnswer: String(question.correctAnswer),
       reviewerId: String(question.reviewerId),
       points: Number(question.points),
@@ -41,6 +42,7 @@ export async function upsertQuestion(data: QuestionFormData) {
       where: { id: data.id || "" }, // Use the `id` if provided; otherwise fallback to an empty string
       update: {
         content: data.content,
+        image: data.image,
         correctAnswer: data.correctAnswer,
         reviewerId: data.reviewerId,
         points: data.points,
@@ -54,6 +56,7 @@ export async function upsertQuestion(data: QuestionFormData) {
       },
       create: {
         content: data.content,
+        image: data.image,
         correctAnswer: data.correctAnswer,
         reviewerId: data.reviewerId,
         points: data.points,

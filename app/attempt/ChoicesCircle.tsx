@@ -14,6 +14,7 @@ interface ChoicesCircleProps {
   choice_index: string;
   onComplete: () => void;
   isAnswer?: boolean;
+  onErase?: () => void;
 }
 
 const ChoicesCircle = forwardRef(
@@ -24,14 +25,40 @@ const ChoicesCircle = forwardRef(
       choice_index,
       onComplete,
       isAnswer = false,
+      onErase,
     }: ChoicesCircleProps,
     ref
   ) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [isDrawing, setIsDrawing] = useState(false);
+    const [hasDrawing, setHasDrawing] = useState(false);
 
+    // Force redraw the empty circle
+    const forceRedraw = useCallback(() => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      // Completely reset the canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      if (isAnswer) {
+        fillCircle();
+      } else {
+        drawCircle();
+      }
+      
+      setHasDrawing(false);
+    }, [isAnswer]);
+
+    // Expose functions to parent component
     useImperativeHandle(ref, () => ({
-      clearCanvas,
+      clearCanvas: () => {
+        forceRedraw();
+      },
+      hasDrawing: () => hasDrawing,
+      forceRedraw: forceRedraw
     }));
 
     const fillCircle = useCallback(() => {
@@ -70,6 +97,7 @@ const ChoicesCircle = forwardRef(
       canvas.height = rect.height;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
       ctx.beginPath();
       ctx.setLineDash([10, 5]);
       const centerX = canvas.width / 2;
@@ -106,6 +134,7 @@ const ChoicesCircle = forwardRef(
         : (e as React.MouseEvent).clientY - rect.top;
 
       setIsDrawing(true);
+      setHasDrawing(true); // Mark that we have drawing activity
       disableScrolling();
 
       ctx.strokeStyle = "#152259";
@@ -159,24 +188,14 @@ const ChoicesCircle = forwardRef(
       }
 
       const fillPercentage = (filledPixels / totalPixels) * 100;
-      //79 ang pinaka accurate
       if (fillPercentage >= 40) {
         onComplete();
       }
     };
 
     const clearCanvas = () => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      if (isAnswer) {
-        fillCircle();
-      } else {
-        drawCircle();
-      }
+      forceRedraw();
+      if (onErase) onErase();
     };
 
     const disableScrolling = () => {
@@ -186,6 +205,32 @@ const ChoicesCircle = forwardRef(
     const enableScrolling = () => {
       document.body.style.overflow = "auto";
     };
+
+    // Add a double-tap handler to erase
+    const lastTap = useRef<number>(0);
+    const handleDoubleTap = (e: React.TouchEvent | React.MouseEvent) => {
+      const now = Date.now();
+      const DOUBLE_TAP_DELAY = 300; // ms
+      
+      if (now - lastTap.current < DOUBLE_TAP_DELAY) {
+        // Double tap detected
+        e.preventDefault();
+        if (hasDrawing && !isSelected && !isDisabled) {
+          clearCanvas();
+        }
+      }
+      
+      lastTap.current = now;
+    };
+
+    useEffect(() => {
+      if (isAnswer) {
+        fillCircle();
+        onComplete();  // Automatically trigger onComplete if it's the correct answer
+      } else if (!isSelected) {
+        drawCircle();
+      }
+    }, []);
 
     return (
       <div className="relative w-fit">
@@ -203,9 +248,13 @@ const ChoicesCircle = forwardRef(
             onMouseMove={draw}
             onMouseUp={stopDrawing}
             onMouseOut={stopDrawing}
-            onTouchStart={startDrawing}
+            onTouchStart={(e) => {
+              handleDoubleTap(e);
+              startDrawing(e);
+            }}
             onTouchMove={draw}
             onTouchEnd={stopDrawing}
+            onClick={handleDoubleTap}
           />
         </div>
         <p className="absolute top-[38%] left-[44%] -z-0">{choice_index}</p>

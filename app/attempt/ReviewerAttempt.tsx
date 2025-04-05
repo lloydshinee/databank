@@ -4,12 +4,12 @@ import { AttemptProvider } from "@/providers/AttemptProvider";
 import { AttemptQuestions } from "./AttemptQuestions";
 import { AttemptScopes } from "./AttemptScopes";
 import { AttemptScore } from "./AttemptScore";
-import TabbedOutWarning from "./TabbedOutWarning";
-import { useTabVisibility } from "@/context/TabVisibilityContext";
+
+
 
 
 export function ReviewerAttempt() {
-  const { isWarningShown } = useTabVisibility();
+  
   const searchParams = useSearchParams();
   const attemptId = searchParams.get("attemptId");
 
@@ -20,7 +20,7 @@ export function ReviewerAttempt() {
         <AttemptScore />
         <AttemptScopes />
         <AttemptQuestions />
-        {isWarningShown && <TabbedOutWarning />}
+        
       </main>
     </AttemptProvider>
   );

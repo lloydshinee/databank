@@ -65,7 +65,8 @@ model Subtopic {
 
 model Question {
   id                      String                    @id @default(uuid())
-  content                 String
+  content                 String?
+  image                   String?
   correctAnswer           String
   points                  Int
   status                  String                    @default("Unlocked")
@@ -82,7 +83,8 @@ model Question {
 
 model QuestionChoices {
   id         String   @id @default(uuid())
-  content    String
+  content    String?
+  image      String?
   index      String
   questionId String
   question   Question @relation(fields: [questionId], references: [id])

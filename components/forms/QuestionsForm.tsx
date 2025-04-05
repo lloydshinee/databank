@@ -11,10 +11,12 @@ import { Label } from "../ui/label";
 import { toast } from "@/hooks/use-toast";
 import { createQuestions } from "@/actions/question.action";
 import { createReviewerLog } from "@/actions/log.action";
+import { FileUploadFormData, uploadImage } from "@/actions/upload.action";
 
 const questionSchema = z.object({
   id: z.string().optional(),
-  content: z.string().min(1, "Question content is required"),
+  content: z.string().min(1, "Question content is required").optional(),
+  image: z.string().optional(),
   correctAnswer: z.string().min(1, "Correct answer is required"),
   points: z.number().min(1, "Question points must be at least 1"),
   reviewerId: z.string(),
@@ -35,6 +37,8 @@ export const questionsFormSchema = z.object({
 export type QuestionsFormData = z.infer<typeof questionsFormSchema>;
 
 export default function QuestionsForm({ reviewerId }: { reviewerId: string }) {
+  const [isUploading, setIsUploading] = useState(false);
+  const [isLoading, setIsloading] = useState(false);
   const [questionCount, setQuestionCount] = useState(0);
   const form = useForm<QuestionsFormData>({
     defaultValues: {
@@ -48,6 +52,7 @@ export default function QuestionsForm({ reviewerId }: { reviewerId: string }) {
   });
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsUploading(true);
     const file = e.target.files?.[0];
     if (!file) {
       toast({
@@ -58,7 +63,7 @@ export default function QuestionsForm({ reviewerId }: { reviewerId: string }) {
     }
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       try {
         const data = new Uint8Array(event.target?.result as ArrayBuffer);
         const workbook = XLSX.read(data, { type: "array" });
@@ -73,18 +78,36 @@ export default function QuestionsForm({ reviewerId }: { reviewerId: string }) {
 
         const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-        const mappedQuestions = jsonData.map((item: any) => ({
-          content: item["Question"] || "",
-          correctAnswer: item["Correct Answer"] || "",
-          points: Number(item["Points"]) || 1,
-          reviewerId,
-          choices: [
-            { index: "A", content: item["A"] || "" },
-            { index: "B", content: item["B"] || "" },
-            { index: "C", content: item["C"] || "" },
-            { index: "D", content: item["D"] || "" },
-          ],
-        }));
+        const convertImagetoStr = async (imageName: any) => {
+          console.log("image",imageName)
+          if (imageName) {
+            // No need for fileToBase64 if you're not actually uploading a File object
+            const form: FileUploadFormData = {
+              fileName: imageName,
+              base64String: "", // Optional: only needed if you're uploading actual content
+            };
+            await uploadImage(form);
+            return `uploads/${imageName}`;
+          } else {
+            return "";
+          }
+        };
+
+        const mappedQuestions = await Promise.all(
+          jsonData.map(async (item: any) => ({
+            content: item["Question"] || "",
+            image: (await convertImagetoStr(item["Image"])) || "",
+            correctAnswer: item["Correct Answer"] || "",
+            points: Number(item["Points"]) || 1,
+            reviewerId,
+            choices: [
+              { index: "A", content: item["A"] || "" },
+              { index: "B", content: item["B"] || "" },
+              { index: "C", content: item["C"] || "" },
+              { index: "D", content: item["D"] || "" },
+            ],
+          }))
+        );
 
         if (mappedQuestions.some((q) => !q.content || !q.correctAnswer)) {
           toast({
@@ -102,12 +125,15 @@ export default function QuestionsForm({ reviewerId }: { reviewerId: string }) {
           title: "Error",
           description: "Invalid file format or data.",
         });
+      } finally {
+        setIsUploading(false);
       }
     };
     reader.readAsArrayBuffer(file);
   };
 
   const handleSubmit = async (data: QuestionsFormData) => {
+    setIsloading(true);
     console.log("Submitted Data:", data);
     await createQuestions(data);
     toast({
@@ -115,6 +141,7 @@ export default function QuestionsForm({ reviewerId }: { reviewerId: string }) {
       description: "Questions submitted successfully",
     });
     createReviewerLog(reviewerId, `Created question(s)`);
+    setIsloading(false);
   };
 
   return (
@@ -141,7 +168,17 @@ export default function QuestionsForm({ reviewerId }: { reviewerId: string }) {
         </div>
 
         {/* Submit Button */}
-        <Button type="submit">Submit</Button>
+        {isUploading ? (
+          <Button className="cursor-not-allowed opacity-60" type="reset">
+            Uploading Questions
+          </Button>
+        ) : isLoading ? (
+          <Button className="cursor-not-allowed opacity-60" type="reset">
+            Submitting Questions
+          </Button>
+        ) : (
+          <Button type="submit">Submit</Button>
+        )}
       </form>
     </FormProvider>
   );

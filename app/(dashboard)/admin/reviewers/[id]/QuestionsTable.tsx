@@ -19,6 +19,7 @@ import QuestionLock from "./QuestionLock";
 import QuestionsForm from "@/components/forms/QuestionsForm";
 import { EditRequest } from "@/app/(dashboard)/faculty/reviewers/[id]/EditRequestButton";
 import QuestionHover from "@/app/(dashboard)/faculty/reviewers/[id]/QuestionHover";
+import { FigureOverlay } from "@/components/overlays/FigureOverlay";
 
 export default function QuestionsTable({ reviewerId }: { reviewerId: string }) {
   const [questions, setQuestions] = useState<any[]>([]);
@@ -49,8 +50,8 @@ export default function QuestionsTable({ reviewerId }: { reviewerId: string }) {
   }, [page]);
 
   return (
-    <div className="space-y-5">
-      <div className="flex gap-3">
+    <div className="space-y-5 ">
+      <div className="flex gap-3 ">
         <FormModal title="Create Question">
           <QuestionForm reviewerId={reviewerId} />
         </FormModal>
@@ -58,7 +59,7 @@ export default function QuestionsTable({ reviewerId }: { reviewerId: string }) {
           <QuestionsForm reviewerId={reviewerId} />
         </FormModal>
       </div>
-      <div className="flex items-center gap-4 mb-4">
+      <div className="flex items-center gap-4 mb-4 ">
         <Input
           placeholder="Search questions"
           value={search}
@@ -94,7 +95,16 @@ export default function QuestionsTable({ reviewerId }: { reviewerId: string }) {
             questions.map((question: Question) => (
               <TableRow key={question.id}>
                 <TableCell>
-                  <QuestionHover question={question} />
+                  <div className="flex gap-3 items-center">
+                    <QuestionHover question={question} />
+                    <div>
+                      {question.image !== "" ? (
+                        <FigureOverlay question={question} />
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  </div>
                 </TableCell>
                 <TableCell>{question.correctAnswer}</TableCell>
                 <TableCell>{question.points}</TableCell>
