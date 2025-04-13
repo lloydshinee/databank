@@ -165,9 +165,9 @@ export async function getReviewerAttempts({
         ...(search && {
           user: {
             OR: [
-              { schoolId: { contains: search, mode: "insensitive" } },
-              { firstName: { contains: search, mode: "insensitive" } },
-              { lastName: { contains: search, mode: "insensitive" } },
+              { schoolId: { contains: search } },
+              { firstName: { contains: search } },
+              { lastName: { contains: search } },
             ],
           },
         }),
@@ -181,9 +181,9 @@ export async function getReviewerAttempts({
         ...(search && {
           user: {
             OR: [
-              { schoolId: { contains: search, mode: "insensitive" } },
-              { firstName: { contains: search, mode: "insensitive" } },
-              { lastName: { contains: search, mode: "insensitive" } },
+              { schoolId: { contains: search } },
+              { firstName: { contains: search } },
+              { lastName: { contains: search } },
             ],
           },
         }),
@@ -198,12 +198,12 @@ export async function getReviewerAttempts({
         questions: {
           include: { question: { include: { choices: true } } },
         },
-        scopes : {
+        scopes: {
           include: {
             topic: true,
-            subtopic: true
-          }
-        }
+            subtopic: true,
+          },
+        },
       },
     });
 

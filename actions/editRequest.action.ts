@@ -63,9 +63,9 @@ export async function getEditRequests({
         ...(search && {
           OR: [
             {
-              question: { content: { contains: search, mode: "insensitive" } },
+              question: { content: { contains: search } },
             }, // Search in question content
-            { status: { contains: search, mode: "insensitive" } }, // Search in request status
+            { status: { contains: search } }, // Search in request status
           ],
         }),
       },
@@ -81,9 +81,9 @@ export async function getEditRequests({
         ...(search && {
           OR: [
             {
-              question: { content: { contains: search, mode: "insensitive" } },
+              question: { content: { contains: search } },
             }, // Search in question content
-            { status: { contains: search, mode: "insensitive" } }, // Search in request status
+            { status: { contains: search } }, // Search in request status
           ],
         }),
       },

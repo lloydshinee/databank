@@ -94,7 +94,7 @@ export async function getQuestions({
       where: {
         reviewerId,
         ...(search && {
-          OR: [{ content: { contains: search, mode: "insensitive" } }],
+          OR: [{ content: { contains: search } }],
         }),
       },
     });
@@ -104,7 +104,7 @@ export async function getQuestions({
       where: {
         reviewerId,
         ...(search && {
-          OR: [{ content: { contains: search, mode: "insensitive" } }],
+          OR: [{ content: { contains: search } }],
         }),
       },
       skip,

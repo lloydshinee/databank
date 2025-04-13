@@ -35,7 +35,7 @@ export async function getLogs({
       where: {
         reviewerId,
         ...(search && {
-          OR: [{ action: { contains: search, mode: "insensitive" } }],
+          OR: [{ action: { contains: search } }],
         }),
       },
     });
@@ -45,7 +45,7 @@ export async function getLogs({
       where: {
         reviewerId,
         ...(search && {
-          OR: [{ action: { contains: search, mode: "insensitive" } }],
+          OR: [{ action: { contains: search } }],
         }),
       },
       skip,

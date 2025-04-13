@@ -23,10 +23,10 @@ export async function getFacultys({
         ...(college && { college }),
         ...(search && {
           OR: [
-            { firstName: { contains: search, mode: "insensitive" } },
-            { lastName: { contains: search, mode: "insensitive" } },
-            { email: { contains: search, mode: "insensitive" } },
-            { schoolId: { contains: search, mode: "insensitive" } },
+            { firstName: { contains: search } },
+            { lastName: { contains: search } },
+            { email: { contains: search } },
+            { schoolId: { contains: search } },
           ],
         }),
       },
@@ -39,10 +39,10 @@ export async function getFacultys({
         ...(college && { college }),
         ...(search && {
           OR: [
-            { firstName: { contains: search, mode: "insensitive" } },
-            { lastName: { contains: search, mode: "insensitive" } },
-            { email: { contains: search, mode: "insensitive" } },
-            { schoolId: { contains: search, mode: "insensitive" } },
+            { firstName: { contains: search } },
+            { lastName: { contains: search } },
+            { email: { contains: search } },
+            { schoolId: { contains: search } },
           ],
         }),
       },
